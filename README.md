@@ -1,4 +1,4 @@
-# Valheim-Character-Editor
+# Valheim Character Editor
 
 This repository is licensed under GNU General Public License v3.0.
 
