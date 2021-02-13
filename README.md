@@ -14,7 +14,7 @@ Usage:
 Known problems:
   - If your character appears naked, start the game, logout and then start the game again. This should resolve the problem.
 
-Coming soon:
+Whats coming next:
   - Name editing.
   - Edit hair color with a slider instead of predefined values.
   - Possible inventory editor.
