@@ -20,7 +20,7 @@ Whats coming next:
   - Edit hair color with a slider instead of predefined values.
   - Possible inventory editor.
 
-This program creates a backup of your character data within each application. If you happen to lose your character or anything related to it, you can go to "C:\Users\<username>\AppData\LocalLow\IronGate\Valheim\characters" and recover it.
+This program creates a backup of your character data with each application. If you happen to lose your character or anything related to it, you can go to "C:\Users\<username>\AppData\LocalLow\IronGate\Valheim\characters" and recover it.
 
 Tested on Valheim 0.143.5 and Windows 10 x6420H2.
 
