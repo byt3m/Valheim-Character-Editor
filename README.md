@@ -13,11 +13,14 @@ Usage:
  
 Known problems:
   - If your character appears naked, start the game, logout and then start the game again. This should resolve the problem.
+  - Sometimes a hair customization is not applied. You can fix it by closing Valheim and applying it again.
 
 Whats coming next:
   - Name editing.
   - Edit hair color with a slider instead of predefined values.
   - Possible inventory editor.
+
+This program creates a backup of your character data within each application. If you happen to lose your character or anything related to it, you can go to "C:\Users\<username>\AppData\LocalLow\IronGate\Valheim\characters" and recover it.
 
 Tested on Valheim 0.143.5 and Windows 10 x6420H2.
 
