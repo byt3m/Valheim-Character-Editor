@@ -5,7 +5,7 @@ This repository is licensed under the GNU General Public License v3.0.
 ![alt text](https://raw.githubusercontent.com/byt3m/Valheim-Character-Editor/main/ValheimCharacterEditor_v1.0.PNG)
 
 Usage:
-  1. If Valheim is open, close it.
+  1. If Valheim is running, close it.
   2. Open ValheimCharacterEditor.
   3. Choose your character and the new customization you want to apply.
   4. Apply the customization.
