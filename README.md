@@ -4,6 +4,8 @@ This repository is licensed under the GNU General Public License v3.0.
 
 ![alt text](https://raw.githubusercontent.com/byt3m/Valheim-Character-Editor/main/ValheimCharacterEditor_v1.0.PNG)
 
+Name editing coming soon.
+
 Usage:
   1. If Valheim is running, close it.
   2. Open ValheimCharacterEditor.
