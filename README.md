@@ -19,7 +19,7 @@ Always use at your own risk. I am not responsible for the lost of any informatio
  
 # Known problems
   - If your character appears naked, start the game, logout and then start the game again. This should resolve the problem.
-  - Sometimes a hair customization is not applied. You can fix it by closing Valheim and applying it again.
+  - Sometimes a customization is not applied. You can fix it by closing Valheim and applying it again.
 
 # Whats coming next
   - Edit hair color with a slider instead of predefined values.
