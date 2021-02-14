@@ -2,7 +2,7 @@
 
 This repository is licensed under the GNU General Public License v3.0.
 
-![alt text](https://raw.githubusercontent.com/byt3m/Valheim-Character-Editor/main/ValheimCharacterEditor_v1.0.PNG)
+![alt text](https://raw.githubusercontent.com/byt3m/Valheim-Character-Editor/main/ValheimCharacterEditor_v1.1.PNG)
 
 This program creates a backup of your character data with each application. If you happen to lose your character or anything related to it, you can go to "C:\Users\<username>\AppData\LocalLow\IronGate\Valheim\characters" and recover it.
 
@@ -22,6 +22,5 @@ Always use at your own risk. I am not responsible for the lost of any informatio
   - Sometimes a hair customization is not applied. You can fix it by closing Valheim and applying it again.
 
 # Whats coming next
-  - Name editing.
   - Edit hair color with a slider instead of predefined values.
   - Possible inventory editor.
