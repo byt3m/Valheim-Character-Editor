@@ -122,13 +122,12 @@ namespace ValheimCharacterEditor
             // 
             this.textBox_Name.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.textBox_Name.Enabled = false;
-            this.textBox_Name.ForeColor = System.Drawing.Color.Gray;
+            this.textBox_Name.ForeColor = System.Drawing.Color.Black;
             this.textBox_Name.Location = new System.Drawing.Point(26, 96);
             this.textBox_Name.MaxLength = 15;
             this.textBox_Name.Name = "textBox_Name";
             this.textBox_Name.Size = new System.Drawing.Size(121, 22);
             this.textBox_Name.TabIndex = 6;
-            this.textBox_Name.Text = "COMING SOON...";
             // 
             // comboBox_Beard
             // 
@@ -215,7 +214,7 @@ namespace ValheimCharacterEditor
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(156, 13);
             this.label1.TabIndex = 7;
-            this.label1.Text = "Valheim Character Editor v1.0";
+            this.label1.Text = "Valheim Character Editor v1.1";
             // 
             // button_Minimize
             // 

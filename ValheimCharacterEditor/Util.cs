@@ -2,11 +2,25 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace ValheimCharacterEditor
 {
     class Util
     {
+        static public byte[] ReadFileBytes(String file)
+        {
+            Byte[] bytes = File.ReadAllBytes(file);
+            Thread.Sleep(100);
+            return bytes;
+        }
+
+        static public void WriteFileBytes(String file, Byte[] data)
+        {
+            File.WriteAllBytes(file, data);
+            Thread.Sleep(100);
+        }
+
         static public byte[] ReconstructByteArray (byte[] array, int current_length, int new_length, int position)
         {
             byte[] new_array = { };
@@ -107,10 +121,10 @@ namespace ValheimCharacterEditor
             }            
         }
 
-        static public int FindInBytes (byte[] byte_array, byte[] toSearch)
+        static public int FindInBytes (byte[] byte_array, byte[] toSearch, int Start = 0)
         {
             int index = 0;
-            for (int p = 0; p < byte_array.Length; p++)
+            for (int p = Start; p < byte_array.Length; p++)
             {
                 if (byte_array[p] == toSearch[index])
                 {

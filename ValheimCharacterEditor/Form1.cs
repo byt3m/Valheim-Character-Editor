@@ -57,14 +57,14 @@ namespace ValheimCharacterEditor
                 Customization.Initialize(comboBox_Characters.SelectedItem.ToString());
 
                 // Read current character data
-                //String name = Customization.ReadCharacterName();
+                String name = Customization.ReadCharacterName();
                 String beard = Customization.ReadCharacterBeard();
                 String hair = Customization.ReadCharacterHair();
                 String color = Customization.ReadCharacterColor();
 
-                if (/*String.IsNullOrEmpty(name) ||*/ String.IsNullOrEmpty(beard) || String.IsNullOrEmpty(hair))
+                if (String.IsNullOrEmpty(name) || String.IsNullOrEmpty(beard) || String.IsNullOrEmpty(hair))
                 {
-                    //textBox_Name.Enabled = false;
+                    textBox_Name.Enabled = false;
                     comboBox_Beard.Enabled = false;
                     comboBox_Hair.Enabled = false;
                     comboBox_HairColor.Enabled = false;
@@ -72,12 +72,12 @@ namespace ValheimCharacterEditor
                     return;
                 }
 
-                //textBox_Name.Text = name;
+                textBox_Name.Text = name;
                 comboBox_Beard.SelectedIndex = comboBox_Beard.FindStringExact(beard);
                 comboBox_Hair.SelectedIndex = comboBox_Hair.FindStringExact(hair);
                 comboBox_HairColor.SelectedIndex = comboBox_HairColor.FindStringExact(color);
 
-                //textBox_Name.Enabled = true;
+                textBox_Name.Enabled = true;
                 comboBox_Beard.Enabled = true;
                 comboBox_Hair.Enabled = true;
                 comboBox_HairColor.Enabled = true;
