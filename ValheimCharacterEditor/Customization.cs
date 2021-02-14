@@ -354,7 +354,7 @@ namespace ValheimCharacterEditor
             if (!String.IsNullOrEmpty(Name) && (!Name.Equals(Current_Character_Name)))
             {
                 // Check name correctness (based on game behaviour)
-                if ((Name.Length >= 3 && Name.Length < 15) && isCorrectName(Name))
+                if ((Name.Length >= 3 && Name.Length <= 15) && isCorrectName(Name))
                 {
                     String NewName = Name[0].ToString().ToUpper();
                     for (int i = 1; i < Name.Length; i++)
