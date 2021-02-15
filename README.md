@@ -24,4 +24,5 @@ Always use at your own risk. I am not responsible for the lost of any informatio
 
 # Whats coming next
   - Edit hair color with a slider instead of predefined values.
+  - Edit skin tones.
   - Possible inventory editor.
