@@ -81,7 +81,7 @@ namespace ValheimCharacterEditor
             }
         }
 
-        static private byte[] ReadCharacterFile()
+        /*static private byte[] ReadCharacterFile()
         {
             byte[] result = { };
 
@@ -96,11 +96,11 @@ namespace ValheimCharacterEditor
             }
             
             return result;
-        }
+        }*/
 
         static private byte[] ReadCharacterAppearance(String Type)
         {
-            byte[] character_file_bytes = ReadCharacterFile();
+            byte[] character_file_bytes = Util.ReadFileBytes(Current_Character_File);
             byte[] bType = { };
 
             if (character_file_bytes.Length == 0)
@@ -124,6 +124,10 @@ namespace ValheimCharacterEditor
 
             if (position == 0)
             {
+                if (Type != "Beard" && Type != "Hair" && Type != "Color")
+                {
+                    Type = "Name";
+                }
                 MessageBox.Show(Type + " not found for character " + Current_Character + ". Please make sure to start a game with this character.", "ERROR", MessageBoxButtons.OK);
                 return bType;
             }
@@ -262,11 +266,11 @@ namespace ValheimCharacterEditor
             return true;
         }
 
-        static private bool WriteCharacterData(String Customization, String Type)
+        static private bool WriteCharacterData(String Customization, String Type, String file_path)
         {
             int position = 0;
             byte[] search_string;
-            byte[] character_file_bytes = ReadCharacterFile();
+            byte[] character_file_bytes = Util.ReadFileBytes(Current_Character_File);
 
             if (character_file_bytes.Length == 0)
             {
@@ -304,7 +308,7 @@ namespace ValheimCharacterEditor
                 int current_length = character_file_bytes[position];
 
                 // Reconstruct byte array if there is a length difference between current customization and the new one
-                if (Customization.Length != current_length)
+                if (Customization.Length != current_length && !Type.Equals("Color"))
                 {
                     character_file_bytes = Util.ReconstructByteArray(character_file_bytes, current_length, Customization.Length, position + 1);
                 }
@@ -328,9 +332,9 @@ namespace ValheimCharacterEditor
                     character_file_bytes[position + i + 1] = (byte)bCustomization[i];
                 }
             }
-            while (true);
+            while (Type.Equals("Name"));
 
-            Util.WriteFileBytes(Current_Character_File, character_file_bytes);
+            Util.WriteFileBytes(file_path, character_file_bytes);
 
             return true;
         }
@@ -351,7 +355,7 @@ namespace ValheimCharacterEditor
             }
 
             // if name is not null and not equal to current name proceed to write it
-            if (!String.IsNullOrEmpty(Name) && (!Name.Equals(Current_Character_Name)))
+            if (!String.IsNullOrEmpty(Name) && (!Name.ToLower().Equals(Current_Character_Name.ToLower())))
             {
                 // Check name correctness (based on game behaviour)
                 if ((Name.Length >= 3 && Name.Length <= 15) && isCorrectName(Name))
@@ -362,9 +366,19 @@ namespace ValheimCharacterEditor
                         NewName += Name[i].ToString().ToLower();
                     }
 
-                    if (WriteCharacterData(NewName, "Name")) // Name
+                    String New_Character_File = Path.Combine(Path.GetDirectoryName(Current_Character_File), (NewName.ToLower() + ".fch"));
+
+                    if (File.Exists(New_Character_File))
                     {
-                        File.Move(Current_Character_File, Path.Combine(Path.GetDirectoryName(Current_Character_File), (NewName + ".fch")));
+                        MessageBox.Show("Character " + Name + " already exists.", "WARNING", MessageBoxButtons.OK);
+                        return false;
+                    }
+
+                    if (WriteCharacterData(NewName, "Name", New_Character_File)) // Name
+                    {
+                        File.Delete(Current_Character_File);
+                        Current_Character_File = New_Character_File;
+                        Current_Character = NewName.ToLower();
                     }
                     else
                     {
@@ -381,7 +395,7 @@ namespace ValheimCharacterEditor
             String NewBeard = Beards_Internal[Util.FindInArrayString(Beards_UI, Beard)];
             if (!NewBeard.Equals(Current_Character_Beard))
             {
-                if (!WriteCharacterData(NewBeard, "Beard")) // Beard
+                if (!WriteCharacterData(NewBeard, "Beard", Current_Character_File)) // Beard
                 {
                     return false;
                 }
@@ -390,7 +404,7 @@ namespace ValheimCharacterEditor
             String NewHair = Hairs_Internal[Util.FindInArrayString(Hairs_UI, Hair)];
             if (!NewHair.Equals(Current_Character_Hair))
             {
-                if (!WriteCharacterData(NewHair, "Hair")) // Beard
+                if (!WriteCharacterData(NewHair, "Hair", Current_Character_File)) // Beard
                 {
                     return false;
                 }
@@ -398,7 +412,7 @@ namespace ValheimCharacterEditor
 
             if (!Hair_Color.Equals(Current_Character_HairColor))
             {
-                if (!WriteCharacterData(Hair_Color, "Color")) // Hair color
+                if (!WriteCharacterData(Hair_Color, "Color", Current_Character_File)) // Hair color
                 {
                     return false;
                 }
