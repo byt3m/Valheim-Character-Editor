@@ -6,9 +6,11 @@ This repository is licensed under the GNU General Public License v3.0.
 
 This program creates a backup of your character data with each application. If you happen to lose your character or anything related to it, you can go to "C:\Users\\[username]\AppData\LocalLow\IronGate\Valheim\characters" and recover it.
 
-Tested on Valheim 0.143.5 and Windows 10 x64 20H2.
+Tested on Valheim 0.143.5 and Windows 10 x64 20H2. Not tested online.
 
 Always use at your own risk. I am not responsible for the lost of any information from your character or any other harm to your copy of Valheim.
+
+Before editing a character, please make sure it is not a new character and that you played with it in any world.
 
 # Usage
   1. If Valheim is running, close it.
