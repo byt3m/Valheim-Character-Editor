@@ -24,13 +24,13 @@ namespace ValheimCharacterEditor
         static public String[] Hairs_UI = { "No hair", "Braided 1", "Braided 2", "Braided 3", "Braided 4", "Long 1", "Ponytail 1", "Ponytail 2", "Ponytail 3", "Ponytail 4", "Short 1", "Short 2", "Side Swept 1", "Side Swept 2", "Side Swept 3" };
         static private String[] Hairs_Internal = { "HairNone", "Hair3", "Hair11", "Hair12", "Hair13", "Hair6", "Hair1", "Hair2", "Hair4", "Hair7", "Hair5", "Hair8", "Hair9", "Hair10", "Hair14" };
         static public String[] Hair_Colors = { "Black", "Blonde", "Ginger", "Brown", "White" };
-        static private Byte[] Color_Black  =   { 0x39, 0xF7, 0xD9, 0x3D, 0x00, 0xEF, 0xCA, 0x3D, 0xAF, 0xDB, 0x99, 0x3D };
-        static private Byte[] Color_Blonde =   { 0x00, 0x00, 0x80, 0x3F, 0x4F, 0xA7, 0x35, 0x3F, 0x3C, 0x3C, 0xFC, 0x3E };
-        static private Byte[] Color_Ginger =   { 0xC4, 0xA6, 0x32, 0x3F, 0x60, 0x69, 0xAE, 0x3E, 0x55, 0xAB, 0x47, 0x3E };
-        static private Byte[] Color_Brown  =   { 0x97, 0x37, 0x06, 0x3F, 0x71, 0x53, 0xBF, 0x3E, 0xA2, 0x0F, 0x85, 0x3E };
-        static private Byte[] Color_White  =   { 0xEA, 0xA0, 0x4E, 0x3F, 0xDA, 0x60, 0x40, 0x3F, 0xFF, 0xDA, 0x11, 0x3F };
+        static private Byte[] Color_Black  =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x39, 0xF7, 0xD9, 0x3D, 0x00, 0xEF, 0xCA, 0x3D, 0xAF, 0xDB, 0x99, 0x3D };
+        static private Byte[] Color_Blonde =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x00, 0x00, 0x80, 0x3F, 0x4F, 0xA7, 0x35, 0x3F, 0x3C, 0x3C, 0xFC, 0x3E };
+        static private Byte[] Color_Ginger =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0xC4, 0xA6, 0x32, 0x3F, 0x60, 0x69, 0xAE, 0x3E, 0x55, 0xAB, 0x47, 0x3E };
+        static private Byte[] Color_Brown  =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x97, 0x37, 0x06, 0x3F, 0x71, 0x53, 0xBF, 0x3E, 0xA2, 0x0F, 0x85, 0x3E };
+        static private Byte[] Color_White  =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0xEA, 0xA0, 0x4E, 0x3F, 0xDA, 0x60, 0x40, 0x3F, 0xFF, 0xDA, 0x11, 0x3F };
         static private Byte[] Search_Pattern = { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F };
-        static public char[] NameAllowedCharacters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z' };
+        static public char[] NameAllowedCharacters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
         static public void Initialize(String Character)
         {
@@ -77,23 +77,6 @@ namespace ValheimCharacterEditor
             }
         }
 
-        /*static private byte[] ReadCharacterFile()
-        {
-            byte[] result = { };
-
-            foreach (String file in FCH_files)
-            {
-                if (Current_Character == Path.GetFileNameWithoutExtension(file))
-                {
-                    result = Util.ReadFileBytes(file);
-                    
-                    break;
-                }
-            }
-            
-            return result;
-        }*/
-
         static private byte[] ReadCharacterAppearance(String Type)
         {
             byte[] character_file_bytes = Util.ReadFileBytes(Current_Character_File);
@@ -109,7 +92,7 @@ namespace ValheimCharacterEditor
 
             if (Type.Equals("Color"))
             {
-                search_string = Search_Pattern;
+                search_string = Encoding.UTF8.GetBytes("Hair");
             }
             else
             {
@@ -124,7 +107,7 @@ namespace ValheimCharacterEditor
                 {
                     Type = "Name";
                 }
-                MessageBox.Show(Type + " not found for character " + Current_Character + ". Please use the \"Repair character\" button.", "ERROR", MessageBoxButtons.OK);
+                MessageBox.Show(Type + " not found for character " + Current_Character + ".", "ERROR", MessageBoxButtons.OK);
                 return bType;
             }
 
@@ -132,8 +115,8 @@ namespace ValheimCharacterEditor
 
             if (Type.Equals("Color"))
             {
-                position += 0xC;
-                type_length = 0xC;
+                position += search_string.Length + 1;
+                type_length = 0x18;
             }
             else
             {
@@ -296,7 +279,7 @@ namespace ValheimCharacterEditor
 
             if (Type.Equals("Color"))
             {
-                 search_string = Search_Pattern;
+                 search_string = Encoding.UTF8.GetBytes("Hair");
             }
             else if (Type.Equals("Name"))
             {
@@ -335,7 +318,7 @@ namespace ValheimCharacterEditor
                 if (Type.Equals("Color"))
                 {
                     bCustomization = GetColorBytes(Customization);
-                    position += 0xC;
+                    position += current_length;
                 }
                 else
                 {
@@ -357,7 +340,7 @@ namespace ValheimCharacterEditor
             return true;
         }
 
-        static public bool WriteCustomization(String Name, String Beard, String Hair, String Hair_Color)
+        static public bool WriteCustomization(String Name, String Beard, String Hair, String Hair_Color, System.Windows.Forms.CheckBox NameCheckbox)
         {
             // Make backup of current FCH file
             String backup = Util.BackupFile(Current_Character_File);
@@ -373,7 +356,7 @@ namespace ValheimCharacterEditor
             }
 
             // if name is not null and not equal to current name proceed to write it
-            if (!String.IsNullOrEmpty(Name) && (!Name.ToLower().Equals(Current_Character_Name.ToLower())))
+            if (!String.IsNullOrEmpty(Name) && (!Name.ToLower().Equals(Current_Character_Name.ToLower())) && NameCheckbox.Checked)
             {
                 // Check name correctness (based on game behaviour)
                 if ((Name.Length >= 3 && Name.Length <= 15) && isCorrectName(Name))

@@ -48,6 +48,7 @@ namespace ValheimCharacterEditor
             this.label_Version = new System.Windows.Forms.Label();
             this.button_Minimize = new System.Windows.Forms.Button();
             this.button_RepairCharacter = new System.Windows.Forms.Button();
+            this.checkBox_ChangeName = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -64,6 +65,7 @@ namespace ValheimCharacterEditor
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBox_ChangeName);
             this.groupBox1.Controls.Add(this.label_SelectChar);
             this.groupBox1.Controls.Add(this.comboBox_Characters);
             this.groupBox1.Controls.Add(this.comboBox_HairColor);
@@ -113,7 +115,7 @@ namespace ValheimCharacterEditor
             // label_Name
             // 
             this.label_Name.AutoSize = true;
-            this.label_Name.Location = new System.Drawing.Point(23, 81);
+            this.label_Name.Location = new System.Drawing.Point(23, 73);
             this.label_Name.Name = "label_Name";
             this.label_Name.Size = new System.Drawing.Size(36, 13);
             this.label_Name.TabIndex = 7;
@@ -124,7 +126,7 @@ namespace ValheimCharacterEditor
             this.textBox_Name.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.textBox_Name.Enabled = false;
             this.textBox_Name.ForeColor = System.Drawing.Color.Black;
-            this.textBox_Name.Location = new System.Drawing.Point(26, 96);
+            this.textBox_Name.Location = new System.Drawing.Point(26, 89);
             this.textBox_Name.MaxLength = 15;
             this.textBox_Name.Name = "textBox_Name";
             this.textBox_Name.Size = new System.Drawing.Size(121, 22);
@@ -136,7 +138,7 @@ namespace ValheimCharacterEditor
             this.comboBox_Beard.Enabled = false;
             this.comboBox_Beard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboBox_Beard.FormattingEnabled = true;
-            this.comboBox_Beard.Location = new System.Drawing.Point(165, 97);
+            this.comboBox_Beard.Location = new System.Drawing.Point(165, 90);
             this.comboBox_Beard.Name = "comboBox_Beard";
             this.comboBox_Beard.Size = new System.Drawing.Size(121, 21);
             this.comboBox_Beard.TabIndex = 4;
@@ -144,7 +146,7 @@ namespace ValheimCharacterEditor
             // label_Beard
             // 
             this.label_Beard.AutoSize = true;
-            this.label_Beard.Location = new System.Drawing.Point(162, 81);
+            this.label_Beard.Location = new System.Drawing.Point(162, 73);
             this.label_Beard.Name = "label_Beard";
             this.label_Beard.Size = new System.Drawing.Size(41, 13);
             this.label_Beard.TabIndex = 5;
@@ -249,6 +251,17 @@ namespace ValheimCharacterEditor
             this.button_RepairCharacter.UseVisualStyleBackColor = false;
             this.button_RepairCharacter.Click += new System.EventHandler(this.button_RepairCharacter_Click);
             // 
+            // checkBox_ChangeName
+            // 
+            this.checkBox_ChangeName.AutoSize = true;
+            this.checkBox_ChangeName.Location = new System.Drawing.Point(26, 117);
+            this.checkBox_ChangeName.Name = "checkBox_ChangeName";
+            this.checkBox_ChangeName.Size = new System.Drawing.Size(102, 17);
+            this.checkBox_ChangeName.TabIndex = 11;
+            this.checkBox_ChangeName.Text = "Change name?";
+            this.checkBox_ChangeName.UseVisualStyleBackColor = true;
+            this.checkBox_ChangeName.CheckedChanged += new System.EventHandler(this.checkBox_ChangeName_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,6 +311,7 @@ namespace ValheimCharacterEditor
         private System.Windows.Forms.Label label_Version;
         private System.Windows.Forms.Button button_Minimize;
         private System.Windows.Forms.Button button_RepairCharacter;
+        private System.Windows.Forms.CheckBox checkBox_ChangeName;
     }
 }
 

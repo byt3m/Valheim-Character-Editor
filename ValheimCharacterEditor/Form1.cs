@@ -62,20 +62,16 @@ namespace ValheimCharacterEditor
                 String name = Customization.ReadCharacterName();
                 if (String.IsNullOrEmpty(name))
                 {
+                    MessageBox.Show("Pattern not found. Character can not be customized.", "ERROR", MessageBoxButtons.OK);
                     button_RepairCharacter.Enabled = true;
                     return;
                 }
 
                 String beard = Customization.ReadCharacterBeard();
-                if (String.IsNullOrEmpty(beard))
-                {
-                    button_RepairCharacter.Enabled = true;
-                    return;
-                }
-
                 String hair = Customization.ReadCharacterHair();
-                if (String.IsNullOrEmpty(hair))
+                if (String.IsNullOrEmpty(hair) && String.IsNullOrEmpty(beard))
                 {
+                    MessageBox.Show("Please use the \"Repair character\" button.", "ERROR", MessageBoxButtons.OK);
                     button_RepairCharacter.Enabled = true;
                     return;
                 }
@@ -105,7 +101,7 @@ namespace ValheimCharacterEditor
                 comboBox_Hair.SelectedIndex = comboBox_Hair.FindStringExact(hair);
                 comboBox_HairColor.SelectedIndex = comboBox_HairColor.FindStringExact(color);
 
-                textBox_Name.Enabled = true;
+                //textBox_Name.Enabled = true;
                 comboBox_Beard.Enabled = true;
                 comboBox_Hair.Enabled = true;
                 comboBox_HairColor.Enabled = true;
@@ -131,7 +127,7 @@ namespace ValheimCharacterEditor
 
             try
             {
-                if (Customization.WriteCustomization(textBox_Name.Text, comboBox_Beard.SelectedItem.ToString(), comboBox_Hair.SelectedItem.ToString(), comboBox_HairColor.SelectedItem.ToString()))
+                if (Customization.WriteCustomization(textBox_Name.Text, comboBox_Beard.SelectedItem.ToString(), comboBox_Hair.SelectedItem.ToString(), comboBox_HairColor.SelectedItem.ToString(), checkBox_ChangeName))
                 {
                     MessageBox.Show("Customization applied.", "INFO", MessageBoxButtons.OK);
                     Application.Exit();
@@ -176,10 +172,21 @@ namespace ValheimCharacterEditor
         private void button_RepairCharacter_Click(object sender, EventArgs e)
         {
             if (!Customization.RepairCharacter())
+            {
                 button_RepairCharacter.Enabled = false;
+                Application.Exit();
+            }
 
             MessageBox.Show("Character repaired, please restart the program.", "INFO", MessageBoxButtons.OK);
             Application.Exit();
+        }
+
+        private void checkBox_ChangeName_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_ChangeName.Checked)
+                textBox_Name.Enabled = true;
+            else
+                textBox_Name.Enabled = false;
         }
     }
 }
