@@ -2,7 +2,7 @@
 
 This repository is licensed under the GNU General Public License v3.0.
 
-![alt text](https://raw.githubusercontent.com/byt3m/Valheim-Character-Editor/main/ValheimCharacterEditor_v1.2.PNG)
+![alt text](https://raw.githubusercontent.com/byt3m/Valheim-Character-Editor/main/ValheimCharacterEditor_v1.3.PNG)
 
 This program creates a backup of your character data with each application. If you happen to lose your character or anything related to it, you can go to "C:\Users\\[username]\AppData\LocalLow\IronGate\Valheim\characters" and recover it.
 
