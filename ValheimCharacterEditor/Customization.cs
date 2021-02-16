@@ -7,12 +7,6 @@ namespace ValheimCharacterEditor
 {
     class Customization
     {
-        //TODO:
-        //    - Write name.
-        //    - Make color configurable with a slider.
-        //    - Inventory editor.
-        
-
         static private String[] FCH_files;
         static public String[] Characters;
         static public string last_backup;
@@ -30,11 +24,13 @@ namespace ValheimCharacterEditor
         static public String[] Hairs_UI = { "No hair", "Braided 1", "Braided 2", "Braided 3", "Braided 4", "Long 1", "Ponytail 1", "Ponytail 2", "Ponytail 3", "Ponytail 4", "Short 1", "Short 2", "Side Swept 1", "Side Swept 2", "Side Swept 3" };
         static private String[] Hairs_Internal = { "HairNone", "Hair3", "Hair11", "Hair12", "Hair13", "Hair6", "Hair1", "Hair2", "Hair4", "Hair7", "Hair5", "Hair8", "Hair9", "Hair10", "Hair14" };
         static public String[] Hair_Colors = { "Black", "Blonde", "Ginger", "Brown", "White" };
-        static private Byte[] Color_Black  = { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x39, 0xF7, 0xD9, 0x3D, 0x00, 0xEF, 0xCA, 0x3D, 0xAF, 0xDB, 0x99, 0x3D };
-        static private Byte[] Color_Blonde = { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x00, 0x00, 0x80, 0x3F, 0x4F, 0xA7, 0x35, 0x3F, 0x3C, 0x3C, 0xFC, 0x3E };
-        static private Byte[] Color_Ginger = { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0xC4, 0xA6, 0x32, 0x3F, 0x60, 0x69, 0xAE, 0x3E, 0x55, 0xAB, 0x47, 0x3E };
-        static private Byte[] Color_Brown  = { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x97, 0x37, 0x06, 0x3F, 0x71, 0x53, 0xBF, 0x3E, 0xA2, 0x0F, 0x85, 0x3E };
-        static private Byte[] Color_White  = { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0xEA, 0xA0, 0x4E, 0x3F, 0xDA, 0x60, 0x40, 0x3F, 0xFF, 0xDA, 0x11, 0x3F };
+        static private Byte[] Color_Black  =   { 0x39, 0xF7, 0xD9, 0x3D, 0x00, 0xEF, 0xCA, 0x3D, 0xAF, 0xDB, 0x99, 0x3D };
+        static private Byte[] Color_Blonde =   { 0x00, 0x00, 0x80, 0x3F, 0x4F, 0xA7, 0x35, 0x3F, 0x3C, 0x3C, 0xFC, 0x3E };
+        static private Byte[] Color_Ginger =   { 0xC4, 0xA6, 0x32, 0x3F, 0x60, 0x69, 0xAE, 0x3E, 0x55, 0xAB, 0x47, 0x3E };
+        static private Byte[] Color_Brown  =   { 0x97, 0x37, 0x06, 0x3F, 0x71, 0x53, 0xBF, 0x3E, 0xA2, 0x0F, 0x85, 0x3E };
+        static private Byte[] Color_White  =   { 0xEA, 0xA0, 0x4E, 0x3F, 0xDA, 0x60, 0x40, 0x3F, 0xFF, 0xDA, 0x11, 0x3F };
+        static private Byte[] Search_Pattern = { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F };
+        static public char[] NameAllowedCharacters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z' };
 
         static public void Initialize(String Character)
         {
@@ -113,7 +109,7 @@ namespace ValheimCharacterEditor
 
             if (Type.Equals("Color"))
             {
-                search_string = Encoding.UTF8.GetBytes("Hair");
+                search_string = Search_Pattern;
             }
             else
             {
@@ -128,7 +124,7 @@ namespace ValheimCharacterEditor
                 {
                     Type = "Name";
                 }
-                MessageBox.Show(Type + " not found for character " + Current_Character + ". Please make sure to start a game with this character.", "ERROR", MessageBoxButtons.OK);
+                MessageBox.Show(Type + " not found for character " + Current_Character + ". Please use the \"Repair character\" button.", "ERROR", MessageBoxButtons.OK);
                 return bType;
             }
 
@@ -136,8 +132,8 @@ namespace ValheimCharacterEditor
 
             if (Type.Equals("Color"))
             {
-                position += character_file_bytes[position];
-                type_length = 0x18;
+                position += 0xC;
+                type_length = 0xC;
             }
             else
             {
@@ -154,10 +150,21 @@ namespace ValheimCharacterEditor
             return bType;
         }
 
+        static private String TransformName(String name)
+        {
+            String[] Name = name.Split(' ');
+
+            for(int i = 0; i < Name.Length; i++)
+            {
+                Name[i] = (String)(Name[i].Substring(0, 1).ToUpper() + Name[i].Substring(1, Name[i].Length - 1));
+            }
+
+            return String.Join(" ", Name);
+        }
+
         static public String ReadCharacterName()
         {
-            String name = Encoding.UTF8.GetString(ReadCharacterAppearance((String)(Current_Character.Substring(0, 1).ToUpper() + 
-                Current_Character.Substring(1, Current_Character.Length - 1))));
+            String name = Encoding.UTF8.GetString(ReadCharacterAppearance(TransformName(Current_Character)));
 
             if (!String.IsNullOrEmpty(name))
             {
@@ -200,6 +207,8 @@ namespace ValheimCharacterEditor
             }
         }
 
+
+
         static public String ReadCharacterColor()
         {
             byte[] color = ReadCharacterAppearance("Color");
@@ -226,7 +235,14 @@ namespace ValheimCharacterEditor
             }
             else
             {
-                Current_Character_HairColor = "Black";
+                if (color.Length == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    Current_Character_HairColor = "Black";
+                }
             }
 
             return Current_Character_HairColor;
@@ -280,7 +296,7 @@ namespace ValheimCharacterEditor
 
             if (Type.Equals("Color"))
             {
-                 search_string = Encoding.UTF8.GetBytes("Hair");
+                 search_string = Search_Pattern;
             }
             else if (Type.Equals("Name"))
             {
@@ -319,7 +335,7 @@ namespace ValheimCharacterEditor
                 if (Type.Equals("Color"))
                 {
                     bCustomization = GetColorBytes(Customization);
-                    position += current_length;
+                    position += 0xC;
                 }
                 else
                 {
@@ -331,6 +347,8 @@ namespace ValheimCharacterEditor
                 {
                     character_file_bytes[position + i + 1] = (byte)bCustomization[i];
                 }
+
+                position += (byte)bCustomization.Length;
             }
             while (Type.Equals("Name"));
 
@@ -342,7 +360,7 @@ namespace ValheimCharacterEditor
         static public bool WriteCustomization(String Name, String Beard, String Hair, String Hair_Color)
         {
             // Make backup of current FCH file
-            String backup = Util.BackupFile(FCH_files[Util.FindInArrayString(Characters, Current_Character)]);
+            String backup = Util.BackupFile(Current_Character_File);
 
             if (String.IsNullOrEmpty(backup))
             {
@@ -417,6 +435,67 @@ namespace ValheimCharacterEditor
                     return false;
                 }
             }
+
+            return true;
+        }
+
+        static public bool RepairCharacter()
+        {
+            byte[] character_file_bytes = Util.ReadFileBytes(Current_Character_File);
+
+            if (character_file_bytes.Length == 0)
+            {
+                MessageBox.Show("There was an error reading character's data.", "ERROR", MessageBoxButtons.OK);
+                return false;
+            }
+
+            byte[] Beard = Encoding.UTF8.GetBytes(Beards_Internal[0]);
+            byte[] Hair = Encoding.UTF8.GetBytes(Hairs_Internal[0]);
+            byte[] bData = new byte[Beard.Length + Hair.Length + 2];
+
+            bData[0] = (byte)Beard.Length;
+            bData[Beard.Length+1] = (byte)Hair.Length;
+
+            for (int i = 0; i < Beard.Length; i++)
+            {
+                bData[i + 1] = Beard[i];
+            }
+
+            for (int i = 0; i < Hair.Length; i++)
+            {
+                bData[i + Beard.Length + 2] = Hair[i];
+            }
+
+            int position = Util.FindInBytes(character_file_bytes, Search_Pattern);
+
+            if (position == 0)
+            {
+                MessageBox.Show("Pattern not found. Character can not be restored", "ERROR", MessageBoxButtons.OK);
+                return false;
+            }
+
+            position++;
+            position -= bData.Length;
+
+            for (int i = 0; i < bData.Length; i++)
+            {
+                character_file_bytes[position + i] = bData[i];
+            }
+
+            // Make backup of current FCH file
+            String backup = Util.BackupFile(Current_Character_File);
+
+            if (String.IsNullOrEmpty(backup))
+            {
+                MessageBox.Show("There was an error while backing up current character data. Changes will not be applied.", "ERROR", MessageBoxButtons.OK);
+                return false;
+            }
+            else
+            {
+                last_backup = backup;
+            }
+
+            Util.WriteFileBytes(Current_Character_File, character_file_bytes);
 
             return true;
         }

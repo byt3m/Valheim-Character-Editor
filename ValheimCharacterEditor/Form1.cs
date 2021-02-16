@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace ValheimCharacterEditor
 {
@@ -58,9 +60,35 @@ namespace ValheimCharacterEditor
 
                 // Read current character data
                 String name = Customization.ReadCharacterName();
+                if (String.IsNullOrEmpty(name))
+                {
+                    button_RepairCharacter.Enabled = true;
+                    return;
+                }
+
                 String beard = Customization.ReadCharacterBeard();
+                if (String.IsNullOrEmpty(beard))
+                {
+                    button_RepairCharacter.Enabled = true;
+                    return;
+                }
+
                 String hair = Customization.ReadCharacterHair();
+                if (String.IsNullOrEmpty(hair))
+                {
+                    button_RepairCharacter.Enabled = true;
+                    return;
+                }
+
                 String color = Customization.ReadCharacterColor();
+                if (String.IsNullOrEmpty(color))
+                {
+                    MessageBox.Show("Pattern not found. Character can not be customized.", "ERROR", MessageBoxButtons.OK);
+                    return;
+                }
+
+                button_RepairCharacter.Enabled = false;
+
 
                 if (String.IsNullOrEmpty(name) || String.IsNullOrEmpty(beard) || String.IsNullOrEmpty(hair))
                 {
@@ -124,6 +152,34 @@ namespace ValheimCharacterEditor
         private void button_Minimize_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
+        }
+
+        private void textBox_Name_TextChanged(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(textBox_Name.Text))
+                return;
+
+            String new_text = "";
+
+            for (int i = 0; i < textBox_Name.Text.Length; i++)
+            {
+                if (Customization.NameAllowedCharacters.Contains(textBox_Name.Text[i]))
+                {
+                    new_text += textBox_Name.Text[i];
+                }
+            }
+
+            textBox_Name.Text = new_text;
+            textBox_Name.Select(textBox_Name.Text.Length, 0);
+        }
+
+        private void button_RepairCharacter_Click(object sender, EventArgs e)
+        {
+            if (!Customization.RepairCharacter())
+                button_RepairCharacter.Enabled = false;
+
+            MessageBox.Show("Character repaired, please restart the program.", "INFO", MessageBoxButtons.OK);
+            Application.Exit();
         }
     }
 }

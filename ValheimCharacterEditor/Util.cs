@@ -40,8 +40,18 @@ namespace ValheimCharacterEditor
 
             // Reconstruct FCH header
             // Header is saved in little-endian
-            // Diference will never be more than 1 byte so we can ignore the rest of the header
-            new_array[0] += (byte)(new_length - current_length);
+            byte[] bHeader = { array[3], array[2], array[1], array[0] };
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bHeader);
+
+            int iHeader = BitConverter.ToInt32(bHeader, 0);
+            byte[] bNewHeader = BitConverter.GetBytes(iHeader + (new_length - current_length));
+
+            for (int i = 0; i < 4; i++)
+            {
+                new_array[i] = bNewHeader[i];
+            }                      
 
             return new_array;
         }
