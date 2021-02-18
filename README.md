@@ -26,6 +26,7 @@ Before editing a character, please make sure it is not a new character and that 
   - For some reason the game does not likes some customizations and may reset one or more of your skills.
 
 # Whats coming next
+  - Add support on the name editor for names with spaces and special characters.
   - Edit hair color with a slider instead of predefined values.
   - Edit skin tones.
   - Edit gender.
