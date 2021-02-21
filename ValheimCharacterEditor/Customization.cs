@@ -94,8 +94,7 @@ namespace ValheimCharacterEditor
 
             var newData = Util.WriteCharacterData(_currentCharacter);
             Util.WriteFileBytes("D:\\data.bin", data);
-            Util.WriteFileBytes("D:\\newData.bin", newData);
-            var lol = "";
+            Util.WriteFileBytes("D:\\newData.bin", newData); // just for debugging, to be removed
         }
 
         public static void GetCharacters()
