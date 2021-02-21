@@ -8,6 +8,23 @@ namespace ValheimCharacterEditor
 {
     class Util
     {
+        public static byte[] ReadFileBytes2(String file)
+        {
+            //Byte[] bytes = File.ReadAllBytes(file);
+            //return bytes;
+
+            FileStream fileStream;
+            fileStream = File.OpenRead(file); // add try catch?
+            Byte[] bytes;
+            BinaryReader binaryReader = new BinaryReader(fileStream);
+
+            int dataSize = binaryReader.ReadInt32();
+            bytes = binaryReader.ReadBytes(dataSize);
+            fileStream.Dispose();
+
+            return bytes;
+        }
+
         static public byte[] ReadFileBytes(String file)
         {
             Byte[] bytes = File.ReadAllBytes(file);
@@ -78,14 +95,8 @@ namespace ValheimCharacterEditor
         {
             Process[] process = Process.GetProcessesByName("valheim");
 
-            if (process.Length == 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            //return process.Length != 0;
+            return false;
         }
 
         static public String BackupFile(String file)

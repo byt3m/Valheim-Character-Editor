@@ -53,8 +53,6 @@ namespace ValheimCharacterEditor
                 return;
             }        
 
-            try
-            {
                 // Save character name and file for future operations
                 Customization.Initialize(comboBox_Characters.SelectedItem.ToString());
 
@@ -106,11 +104,7 @@ namespace ValheimCharacterEditor
                 comboBox_Hair.Enabled = true;
                 comboBox_HairColor.Enabled = true;
                 button_Apply.Enabled = true;
-            }
-            catch
-            {
-                MessageBox.Show("There was an error while trying to get character data.", "ERROR", MessageBoxButtons.OK);
-            }
+
         }
 
         private void button_Apply_Click(object sender, EventArgs e)
