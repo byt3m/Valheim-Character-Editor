@@ -91,6 +91,11 @@ namespace ValheimCharacterEditor
 
             var data = Util.ReadFileBytes(_currentCharacter.Path);
             Util.ParseCharacterData(data, _currentCharacter);
+
+            var newData = Util.WriteCharacterData(_currentCharacter);
+            Util.WriteFileBytes("D:\\data.bin", data);
+            Util.WriteFileBytes("D:\\newData.bin", newData);
+            var lol = "";
         }
 
         public static void GetCharacters()
@@ -488,7 +493,7 @@ namespace ValheimCharacterEditor
             public bool IsFirstSpawn;
             public int Kills;
             public List<string> KnownMaterials;
-            public float MaxHp;
+            public float MaxHp = 0;
             public int Model;
             public string Name = "";
             public string Path = "";

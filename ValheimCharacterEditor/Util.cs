@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -46,7 +47,7 @@ namespace ValheimCharacterEditor
                 };
                 if (reader.ReadBoolean())
                 {
-                    var mapDataLength = reader.ReadInt32();     //character.WorldsData[worldId].MapData.Length;
+                    var mapDataLength = reader.ReadInt32();
                     var array = new byte[mapDataLength];
                     var loop = 0;
                     while (mapDataLength > 0)
@@ -185,8 +186,152 @@ namespace ValheimCharacterEditor
             }
         }
 
-        
-        
+        public static byte[] WriteCharacterData(Customization.Character character)
+        {
+            var stream = new MemoryStream();
+            var writer = new BinaryWriter(stream);
+
+            writer.Write(character.CharacterVersion);
+            writer.Write(character.Kills);
+            writer.Write(character.Deaths);
+            writer.Write(character.Crafts);
+            writer.Write(character.Builds);
+            writer.Write(character.WorldsData.Count);
+            foreach (var world in character.WorldsData)
+            {
+                writer.Write(world.Key);
+                writer.Write(world.Value.HasCustomSpawnPoint);
+                writer.Write(world.Value.SpawnPoint.X);
+                writer.Write(world.Value.SpawnPoint.Y);
+                writer.Write(world.Value.SpawnPoint.Z);
+                writer.Write(world.Value.HasLogoutPoint);
+                writer.Write(world.Value.LogoutPoint.X);
+                writer.Write(world.Value.LogoutPoint.Y);
+                writer.Write(world.Value.LogoutPoint.Z);
+                writer.Write(world.Value.HasDeathPoint);
+                writer.Write(world.Value.DeathPoint.X);
+                writer.Write(world.Value.DeathPoint.Y);
+                writer.Write(world.Value.DeathPoint.Z);
+                writer.Write(world.Value.HomePoint.X);
+                writer.Write(world.Value.HomePoint.Y);
+                writer.Write(world.Value.HomePoint.Z);
+                writer.Write(world.Value.MapData != null);
+                writer.Write(character.WorldsData[world.Key].MapData.Length);
+                if (world.Value.MapData != null)
+                    writer.Write(world.Value.MapData);
+            }
+            writer.Write(character.Name);
+            writer.Write(character.Id);
+            writer.Write(character.StartSeed);
+            writer.Write(character.MaxHp != 0);
+            
+
+            //player data
+            //need to turn data into hex, calculate size and put it before actual data
+            var stream2 = new MemoryStream();
+            var writer2 = new BinaryWriter(stream2);
+            if (character.MaxHp != 0)
+            {
+                writer2.Write(character.DataVersion);
+                writer2.Write(character.MaxHp);
+                writer2.Write(character.Hp);
+                writer2.Write(character.Stamina);
+                writer2.Write(character.IsFirstSpawn);
+                writer2.Write(character.TimeSinceDeath);
+                writer2.Write(character.GuardianPower);
+                writer2.Write(character.GuardianPowerCooldown);
+                writer2.Write(character.InventoryVersion);
+                writer2.Write(character.Inventory.Count);
+                foreach (var item in character.Inventory)
+                {
+                    writer2.Write(item.Name);
+                    writer2.Write(item.Stack);
+                    writer2.Write(item.Durability);
+                    writer2.Write(item.Pos.Item1);
+                    writer2.Write(item.Pos.Item2);
+                    writer2.Write(item.Equipped);
+                    writer2.Write(item.Quality);
+                    writer2.Write(item.Variant);
+                    writer2.Write(item.CrafterId);
+                    writer2.Write(item.CrafterName);
+                }
+
+                writer2.Write(character.Recipes.Count);
+                foreach (var recipe in character.Recipes)
+                    writer2.Write(recipe);
+                writer2.Write(character.Stations.Count);
+                foreach (var station in character.Stations)
+                {
+                    writer2.Write(station.Key);
+                    writer2.Write(station.Value);
+                }
+
+                writer2.Write(character.KnownMaterials.Count);
+                foreach (var material in character.KnownMaterials)
+                    writer2.Write(material);
+                writer2.Write(character.ShownTutorials.Count);
+                foreach (var tutorial in character.ShownTutorials)
+                    writer2.Write(tutorial);
+                writer2.Write(character.Uniques.Count);
+                foreach (var unique in character.Uniques)
+                    writer2.Write(unique);
+                writer2.Write(character.Trophies.Count);
+                foreach (var trophy in character.Trophies)
+                    writer2.Write(trophy);
+                writer2.Write(character.Biomes.Count);
+                foreach (var biome in character.Biomes)
+                    writer2.Write((int) biome);
+                writer2.Write(character.Texts.Count);
+                foreach (var text in character.Texts)
+                {
+                    writer2.Write(text.Key);
+                    writer2.Write(text.Value);
+                }
+
+                writer2.Write(character.Beard);
+                writer2.Write(character.Hair);
+                writer2.Write(character.SkinColor.X);
+                writer2.Write(character.SkinColor.Y);
+                writer2.Write(character.SkinColor.Z);
+                writer2.Write(character.HairColor.X);
+                writer2.Write(character.HairColor.Y);
+                writer2.Write(character.HairColor.Z);
+                writer2.Write(character.Model);
+                writer2.Write(character.Foods.Count);
+                foreach (var food in character.Foods)
+                {
+                    writer2.Write(food.Name);
+                    writer2.Write(food.HpLeft);
+                    writer2.Write(food.StaminaLeft);
+                }
+
+                writer2.Write(character.SkillsVersion);
+                writer2.Write(character.Skills.Count);
+                foreach (var skill in character.Skills)
+                {
+                    writer2.Write((int) skill.SkillName);
+                    writer2.Write(skill.Level);
+                    writer2.Write(skill.Something);
+                }
+            }
+
+            writer2.Flush();
+            stream2.Flush();
+            byte[] playerData = stream2.ToArray();
+
+            //calc size
+            writer.Write(playerData.Length);
+
+            writer.Flush();
+            stream.Flush();
+            byte[] data = stream.ToArray();
+            byte[] final = data.Concat(playerData).ToArray();
+            byte[] length = BitConverter.GetBytes(final.Length);
+            byte[] hashLength = BitConverter.GetBytes(64); // 512/8
+            byte[] hash = SHA512.Create().ComputeHash(final);
+            return length.Concat(final).ToArray().Concat(hashLength).ToArray().Concat(hash).ToArray();
+        }
+
         public static void WriteFileBytes(string file, byte[] data)
         {
             File.WriteAllBytes(file, data);
