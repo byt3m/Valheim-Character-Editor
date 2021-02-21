@@ -50,6 +50,8 @@ namespace ValheimCharacterEditor
             public pos SkinColor;
             public pos HairColor;
             public int Model;
+            public List<Food> Foods;
+            public List<Skill> Skills;
 
             public class pos
             {
@@ -83,6 +85,13 @@ namespace ValheimCharacterEditor
                 public string CrafterName;
             }
 
+            public class Food
+            {
+                public string Name;
+                public float HpLeft;
+                public float StaminaLeft;
+            }
+
             public enum Biome
             {
                 None,
@@ -96,6 +105,36 @@ namespace ValheimCharacterEditor
                 Ocean = 256,
                 Mistlands = 512,
                 BiomesMax
+            }
+
+            public enum SkillName
+            {
+                None,
+                Swords,
+                Knives,
+                Clubs,
+                Polearms,
+                Spears,
+                Blocking,
+                Axes,
+                Bows,
+                FireMagic,
+                FrostMagic,
+                Unarmed,
+                Pickaxes,
+                WoodCutting,
+                Jump = 100,
+                Sneak,
+                Run,
+                Swim,
+                All = 999
+            }
+
+            public class Skill
+            {
+                public SkillName skillName;
+                public float level;
+                public float something;
             }
         }
 

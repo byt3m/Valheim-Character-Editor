@@ -25,7 +25,7 @@ namespace ValheimCharacterEditor
         {
             MemoryStream stream = new MemoryStream(data);
             BinaryReader reader = new BinaryReader(stream);
-            int version = reader.ReadInt32(); // shouldn't be below 30
+            int characterVersion = reader.ReadInt32(); // shouldn't be below 30
             Character.Kills = reader.ReadInt32();
             Character.Deaths = reader.ReadInt32();
             Character.Crafts = reader.ReadInt32();
@@ -52,10 +52,9 @@ namespace ValheimCharacterEditor
             Character.Id = reader.ReadInt64();
             Character.StartSeed = reader.ReadString();
 
-            // something here
             if (!reader.ReadBoolean()) return;
             int dataLength = reader.ReadInt32();
-            int anotherVersion = reader.ReadInt32();
+            int dataVersion = reader.ReadInt32();
             
             Character.MaxHp = reader.ReadSingle();
             Character.Hp = reader.ReadSingle();
@@ -66,7 +65,7 @@ namespace ValheimCharacterEditor
             Character.GuardianPowerCooldown = reader.ReadSingle();
             Character.Inventory = new List<Customization.Character.Item>();
 
-            int anotherAnotherVersion = reader.ReadInt32();
+            int inventoryVersion = reader.ReadInt32();
             int numberOfItems = reader.ReadInt32();
             for (int i = 0; i < numberOfItems; i++)
             {
@@ -136,7 +135,33 @@ namespace ValheimCharacterEditor
                 x = reader.ReadSingle(), y = reader.ReadSingle(), z = reader.ReadSingle()
             };
             Character.Model = reader.ReadInt32();
+
+            int numberOfConsumedFood = reader.ReadInt32();
+            Character.Foods = new List<Customization.Character.Food>();
+            for (int i = 0; i < numberOfConsumedFood; i++)
+            {
+                var food = new Customization.Character.Food
+                {
+                    Name = reader.ReadString(), HpLeft = reader.ReadSingle(), StaminaLeft = reader.ReadSingle()
+                };
+                Character.Foods.Add(food);
+            }
+
+            int skillsVersion = reader.ReadInt32();
+            int numberOfSkills = reader.ReadInt32();
+            Character.Skills = new List<Customization.Character.Skill>();
+            for (int i = 0; i < numberOfSkills; i++)
+            {
+                var skill = new Customization.Character.Skill
+                {
+                    skillName = (Customization.Character.SkillName) reader.ReadInt32(),
+                    level = reader.ReadSingle(),
+                    something = reader.ReadSingle()
+                };
+                Character.Skills.Add(skill);
+            }
         }
+        
 
         private static byte[] ReadArray(BinaryReader reader, MemoryStream stream)
         {
