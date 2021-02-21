@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -10,19 +11,154 @@ namespace ValheimCharacterEditor
     {
         public static byte[] ReadFileBytes2(String file)
         {
-            //Byte[] bytes = File.ReadAllBytes(file);
-            //return bytes;
-
-            FileStream fileStream;
-            fileStream = File.OpenRead(file); // add try catch?
-            Byte[] bytes;
+            var fileStream = File.OpenRead(file);
             BinaryReader binaryReader = new BinaryReader(fileStream);
 
             int dataSize = binaryReader.ReadInt32();
-            bytes = binaryReader.ReadBytes(dataSize);
+            byte[] bytes = binaryReader.ReadBytes(dataSize);
             fileStream.Dispose();
 
             return bytes;
+        }
+
+        public static void ParseCharacterData(byte[] data, Customization.Character Character)
+        {
+            MemoryStream stream = new MemoryStream(data);
+            BinaryReader reader = new BinaryReader(stream);
+            int version = reader.ReadInt32(); // shouldn't be below 30
+            Character.Kills = reader.ReadInt32();
+            Character.Deaths = reader.ReadInt32();
+            Character.Crafts = reader.ReadInt32();
+            Character.Builds = reader.ReadInt32();
+            int NumberOfWorlds = reader.ReadInt32();
+            for (int i = 0; i < NumberOfWorlds; i++)
+            {
+                long WorldID = reader.ReadInt64();
+                var world = new Customization.Character.World
+                {
+                    HasCustomSpawnPoint = reader.ReadBoolean(),
+                    SpawnPoint = { x = reader.ReadSingle(), y = reader.ReadSingle(), z = reader.ReadSingle() },
+                    HasLogoutPoint = reader.ReadBoolean(),
+                    LogoutPoint = { x = reader.ReadSingle(), y = reader.ReadSingle(), z = reader.ReadSingle() },
+                    HasDeathPoint = reader.ReadBoolean(),
+                    DeathPoint = { x = reader.ReadSingle(), y = reader.ReadSingle(), z = reader.ReadSingle() },
+                    HomePoint = { x = reader.ReadSingle(), y = reader.ReadSingle(), z = reader.ReadSingle() },
+                    MapData = reader.ReadBoolean() ? ReadArray(reader, stream) : null
+                };
+                Character.WorldsData.Add(WorldID, world);
+            }
+
+            Character.Name = reader.ReadString();
+            Character.Id = reader.ReadInt64();
+            Character.StartSeed = reader.ReadString();
+
+            // something here
+            if (!reader.ReadBoolean()) return;
+            int dataLength = reader.ReadInt32();
+            int anotherVersion = reader.ReadInt32();
+            
+            Character.MaxHp = reader.ReadSingle();
+            Character.Hp = reader.ReadSingle();
+            Character.Stamina = reader.ReadSingle();
+            Character.IsFirstSpawn = reader.ReadBoolean();
+            Character.TimeSinceDeath = reader.ReadSingle();
+            Character.GuardianPower = reader.ReadString();
+            Character.GuardianPowerCooldown = reader.ReadSingle();
+            Character.Inventory = new List<Customization.Character.Item>();
+
+            int anotherAnotherVersion = reader.ReadInt32();
+            int numberOfItems = reader.ReadInt32();
+            for (int i = 0; i < numberOfItems; i++)
+            {
+                var item = new Customization.Character.Item();
+                
+                item.Name = reader.ReadString();
+                item.Stack = reader.ReadInt32();
+                item.Durability = reader.ReadSingle();
+                item.Pos = new Tuple<int, int>(reader.ReadInt32(), reader.ReadInt32());
+                item.Equipped = reader.ReadBoolean();
+                item.Quality = reader.ReadInt32();
+                item.Variant = reader.ReadInt32();
+                item.CrafterId = reader.ReadInt64();
+                item.CrafterName = reader.ReadString();
+
+                if (item.Name != "")
+                    Character.Inventory.Add(item);
+            }
+
+            Character.Recipes = new List<string>();
+            Character.KnownMaterials = new List<string>();
+            Character.ShownTutorials = new List<string>();
+            Character.Uniques = new List<string>();
+            Character.Trophies = new List<string>();
+            Character.Biomes = new List<Customization.Character.Biome>();
+
+            int numberOfRecipes = reader.ReadInt32();
+            for (int i = 0; i < numberOfRecipes; i++)
+                Character.Recipes.Add(reader.ReadString());
+
+            int numberOfStations = reader.ReadInt32();
+            for (int i = 0; i < numberOfStations; i++)
+                Character.Stations.Add(reader.ReadString(), reader.ReadInt32());
+
+            int numberOfKnownMaterials = reader.ReadInt32();
+            for (int i = 0; i < numberOfKnownMaterials; i++)
+                Character.KnownMaterials.Add(reader.ReadString());
+
+            int numberOfShownTutorials = reader.ReadInt32();
+            for (int i = 0; i < numberOfShownTutorials; i++)
+                Character.ShownTutorials.Add(reader.ReadString());
+
+            int numberOfUniques = reader.ReadInt32();
+            for (int i = 0; i < numberOfUniques; i++)
+                Character.Uniques.Add(reader.ReadString());
+
+            int numberOfTrophies = reader.ReadInt32();
+            for (int i = 0; i < numberOfTrophies; i++)
+                Character.Trophies.Add(reader.ReadString());
+
+            int numberOfBiomes = reader.ReadInt32();
+            for (int i = 0; i < numberOfBiomes; i++) 
+                Character.Biomes.Add((Customization.Character.Biome)reader.ReadInt32());
+
+            int numberOfTexts = reader.ReadInt32();
+            for (int i = 0; i < numberOfTexts; i++)
+                Character.Texts.Add(reader.ReadString(), reader.ReadString());
+
+            Character.Beard = reader.ReadString();
+            Character.Hair = reader.ReadString();
+            Character.SkinColor = new Customization.Character.pos
+            {
+                x = reader.ReadSingle(), y = reader.ReadSingle(), z = reader.ReadSingle()
+            };
+            Character.HairColor = new Customization.Character.pos
+            {
+                x = reader.ReadSingle(), y = reader.ReadSingle(), z = reader.ReadSingle()
+            };
+            Character.Model = reader.ReadInt32();
+        }
+
+        private static byte[] ReadArray(BinaryReader reader, MemoryStream stream)
+        {
+            int count = reader.ReadInt32();
+            byte[] array = new byte[count];
+            int loop = 0;
+            while (count > 0)
+            {
+                int check = stream.Read(array, loop, count);
+                if (check == 0)
+                    break;
+                loop += check;
+                count -= check;
+            }
+            if (loop != array.Length)
+            {
+                byte[] array2 = new byte[loop];
+                Buffer.BlockCopy(array, 0, array2, 0, loop);
+                array = array2;
+            }
+
+            return array;
         }
 
         static public byte[] ReadFileBytes(String file)

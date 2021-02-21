@@ -17,36 +17,85 @@ namespace ValheimCharacterEditor
         static private String Current_Character_Hair;
         static private String Current_Character_HairColor;
 
-        private class Character
+        public class Character
         {
             public string FileName = "";
             public string Path = "";
             public string Name = "";
             public long Id;
             public string StartSeed = "";
-            public byte[] Data;
+            public Dictionary<long, World> WorldsData = new Dictionary<long, World>();
             public int Kills;
             public int Deaths;
             public int Crafts;
             public int Builds;
-            public Dictionary<long, World> WorldsData = new Dictionary<long, World>();
+            public float MaxHp;
+            public float Hp;
+            public float Stamina;
+            public bool IsFirstSpawn;
+            public float TimeSinceDeath;
+            public string GuardianPower;
+            public float GuardianPowerCooldown;
+            public List<Item> Inventory;
+            public List<string> Recipes;
+            public Dictionary<string, int> Stations = new Dictionary<string, int>();
+            public List<string> KnownMaterials;
+            public List<string> ShownTutorials;
+            public List<string> Uniques;
+            public List<string> Trophies;
+            public List<Biome> Biomes;
+            public Dictionary<string, string> Texts = new Dictionary<string, string>();
+            public string Beard = "";
+            public string Hair = "";
+            public pos SkinColor;
+            public pos HairColor;
+            public int Model;
+
+            public class pos
+            {
+                public float x = 0;
+                public float y = 0;
+                public float z = 0;
+            }
+
             public class World
             {
-                public class coords
-                {
-                    public float x = 0;
-                    public float y = 0;
-                    public float z = 0;
-                }
-
-                public coords SpawnPoint = new coords();
+                public pos SpawnPoint = new pos();
                 public bool HasCustomSpawnPoint;
-                public coords LogoutPoint = new coords();
+                public pos LogoutPoint = new pos();
                 public bool HasLogoutPoint;
-                public coords DeathPoint = new coords();
+                public pos DeathPoint = new pos();
                 public bool HasDeathPoint;
-                public coords HomePoint = new coords();
+                public pos HomePoint = new pos();
                 public byte[] MapData;
+            }
+
+            public class Item
+            {
+                public string Name;
+                public int Stack;
+                public float Durability;
+                public Tuple<int, int> Pos;
+                public bool Equipped;
+                public int Quality;
+                public int Variant;
+                public long CrafterId;
+                public string CrafterName;
+            }
+
+            public enum Biome
+            {
+                None,
+                Meadows,
+                Swamp,
+                Mountain = 4,
+                BlackForest = 8,
+                Plains = 16,
+                AshLands = 32,
+                DeepNorth = 64,
+                Ocean = 256,
+                Mistlands = 512,
+                BiomesMax
             }
         }
 
@@ -77,77 +126,7 @@ namespace ValheimCharacterEditor
             }
 
             byte[] data = Util.ReadFileBytes2(CurrentCharacter.Path);
-            ParseCharacterData(data, CurrentCharacter);
-        }
-
-        private static void ParseCharacterData(byte[] data, Character Character)
-        {
-            MemoryStream stream = new MemoryStream(data);
-            BinaryReader reader = new BinaryReader(stream);
-            int version = reader.ReadInt32(); // shouldn't be below 30
-            Character.Kills = reader.ReadInt32();
-            Character.Deaths = reader.ReadInt32();
-            Character.Crafts = reader.ReadInt32();
-            Character.Builds = reader.ReadInt32();
-            int NumberOfWorlds = reader.ReadInt32();
-            int SizeOfWorldsData = NumberOfWorlds * 1;
-            for (int i = 0; i < NumberOfWorlds; i++)
-            {
-                long WorldID = reader.ReadInt64();
-                Character.World world = new Character.World();
-                
-                world.HasCustomSpawnPoint = reader.ReadBoolean();
-                world.SpawnPoint.x = reader.ReadSingle();
-                world.SpawnPoint.y = reader.ReadSingle();
-                world.SpawnPoint.z = reader.ReadSingle();
-
-                world.HasLogoutPoint = reader.ReadBoolean();
-                world.LogoutPoint.x = reader.ReadSingle();
-                world.LogoutPoint.y = reader.ReadSingle();
-                world.LogoutPoint.z = reader.ReadSingle();
-
-                world.HasDeathPoint = reader.ReadBoolean();
-                world.DeathPoint.x = reader.ReadSingle();
-                world.DeathPoint.y = reader.ReadSingle();
-                world.DeathPoint.z = reader.ReadSingle();
-
-                world.HomePoint.x = reader.ReadSingle();
-                world.HomePoint.y = reader.ReadSingle();
-                world.HomePoint.z = reader.ReadSingle();
-
-                if (reader.ReadBoolean())
-                {
-                    world.MapData = ReadArray(reader, stream);
-                }
-                Character.WorldsData.Add(WorldID, world);
-            }
-            Character.Name = reader.ReadString();
-            Character.Id = reader.ReadInt64();
-            Character.StartSeed = reader.ReadString();
-            Character.Data = reader.ReadBoolean() ? ReadArray(reader, stream) : null;
-        }
-
-        static private byte[] ReadArray(BinaryReader reader, MemoryStream stream)
-        {
-            int count = reader.ReadInt32();
-            byte[] array = new byte[count];
-            int loop = 0;
-            while (count > 0)
-            {
-                int check = stream.Read(array, loop, count);
-                if (check == 0)
-                    break;
-                loop += check;
-                count -= check;
-            }
-            if (loop != array.Length)
-            {
-                byte[] array2 = new byte[loop];
-                Buffer.BlockCopy(array, 0, array2, 0, loop);
-                array = array2;
-            }
-
-            return array;
+            Util.ParseCharacterData(data, CurrentCharacter);
         }
 
         static public void GetCharacters()
