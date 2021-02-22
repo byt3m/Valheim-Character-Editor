@@ -32,6 +32,7 @@ namespace ValheimCharacterEditor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.comboBox_Characters = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox_ChangeName = new System.Windows.Forms.CheckBox();
             this.label_SelectChar = new System.Windows.Forms.Label();
             this.comboBox_HairColor = new System.Windows.Forms.ComboBox();
             this.label_HairColor = new System.Windows.Forms.Label();
@@ -48,7 +49,6 @@ namespace ValheimCharacterEditor
             this.label_Version = new System.Windows.Forms.Label();
             this.button_Minimize = new System.Windows.Forms.Button();
             this.button_RepairCharacter = new System.Windows.Forms.Button();
-            this.checkBox_ChangeName = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -83,6 +83,17 @@ namespace ValheimCharacterEditor
             this.groupBox1.Size = new System.Drawing.Size(314, 195);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
+            // 
+            // checkBox_ChangeName
+            // 
+            this.checkBox_ChangeName.AutoSize = true;
+            this.checkBox_ChangeName.Location = new System.Drawing.Point(26, 117);
+            this.checkBox_ChangeName.Name = "checkBox_ChangeName";
+            this.checkBox_ChangeName.Size = new System.Drawing.Size(102, 17);
+            this.checkBox_ChangeName.TabIndex = 11;
+            this.checkBox_ChangeName.Text = "Change name?";
+            this.checkBox_ChangeName.UseVisualStyleBackColor = true;
+            this.checkBox_ChangeName.CheckedChanged += new System.EventHandler(this.checkBox_ChangeName_CheckedChanged);
             // 
             // label_SelectChar
             // 
@@ -219,7 +230,7 @@ namespace ValheimCharacterEditor
             this.label_Version.Name = "label_Version";
             this.label_Version.Size = new System.Drawing.Size(156, 13);
             this.label_Version.TabIndex = 7;
-            this.label_Version.Text = "Valheim Character Editor v1.3";
+            this.label_Version.Text = "Valheim Character Editor v1.4";
             // 
             // button_Minimize
             // 
@@ -250,17 +261,6 @@ namespace ValheimCharacterEditor
             this.button_RepairCharacter.Text = "Repair character";
             this.button_RepairCharacter.UseVisualStyleBackColor = false;
             this.button_RepairCharacter.Click += new System.EventHandler(this.button_RepairCharacter_Click);
-            // 
-            // checkBox_ChangeName
-            // 
-            this.checkBox_ChangeName.AutoSize = true;
-            this.checkBox_ChangeName.Location = new System.Drawing.Point(26, 117);
-            this.checkBox_ChangeName.Name = "checkBox_ChangeName";
-            this.checkBox_ChangeName.Size = new System.Drawing.Size(102, 17);
-            this.checkBox_ChangeName.TabIndex = 11;
-            this.checkBox_ChangeName.Text = "Change name?";
-            this.checkBox_ChangeName.UseVisualStyleBackColor = true;
-            this.checkBox_ChangeName.CheckedChanged += new System.EventHandler(this.checkBox_ChangeName_CheckedChanged);
             // 
             // Form1
             // 
@@ -310,8 +310,8 @@ namespace ValheimCharacterEditor
         private System.Windows.Forms.Button button_Exit;
         private System.Windows.Forms.Label label_Version;
         private System.Windows.Forms.Button button_Minimize;
-        private System.Windows.Forms.Button button_RepairCharacter;
         private System.Windows.Forms.CheckBox checkBox_ChangeName;
+        private System.Windows.Forms.Button button_RepairCharacter;
     }
 }
 
