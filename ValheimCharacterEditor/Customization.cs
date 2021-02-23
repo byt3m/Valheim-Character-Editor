@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Text;
@@ -8,39 +9,58 @@ namespace ValheimCharacterEditor
 {
     class Customization
     {
-        static private String[] _FCH_files;
+        static private String[] _fchFiles;
         static public String[] Characters;
         static public bool FirstRun = true;
-        //static private bool _UseSearchPattern = true;
 
-        static public String SelectedCharacterFile;
         static public String SelectedCharacterBeard;
         static public String SelectedCharacterHair;
+        public static HairColorPreset closestPreset;
 
-        static private int _CurrentCharacterBeardPosition;
-        static private int _CurrentCharacterHairPosition;
-        static private int _CurrentCharacterHairColorPosition;
+        public static Character CurrentCharacter;
 
-        static public String[] Beards_UI = { "No beard", "Braided 1", "Braided 2", "Braided 3", "Braided 4", "Long 1", "Long 2", "Short 1", "Short 2", "Short 3", "Thick 1" };
-        static private String[] _Beards_Internal = { "BeardNone", "Beard5", "Beard6", "Beard9", "Beard10", "Beard1", "Beard2", "Beard3", "Beard4", "Beard7", "Beard8" };
-        static public String[] Hairs_UI = { "No hair", "Braided 1", "Braided 2", "Braided 3", "Braided 4", "Long 1", "Ponytail 1", "Ponytail 2", "Ponytail 3", "Ponytail 4", "Short 1", "Short 2", "Side Swept 1", "Side Swept 2", "Side Swept 3" };
-        static private String[] _Hairs_Internal = { "HairNone", "Hair3", "Hair11", "Hair12", "Hair13", "Hair6", "Hair1", "Hair2", "Hair4", "Hair7", "Hair5", "Hair8", "Hair9", "Hair10", "Hair14" };
-        static public String[] Hair_Colors = { "Black", "Blonde", "Ginger", "Brown", "White" };
-        static private Byte[] _Color_Black  =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x39, 0xF7, 0xD9, 0x3D, 0x00, 0xEF, 0xCA, 0x3D, 0xAF, 0xDB, 0x99, 0x3D };
-        static private Byte[] _Color_Blonde =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x00, 0x00, 0x80, 0x3F, 0x4F, 0xA7, 0x35, 0x3F, 0x3C, 0x3C, 0xFC, 0x3E };
-        static private Byte[] _Color_Ginger =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0xC4, 0xA6, 0x32, 0x3F, 0x60, 0x69, 0xAE, 0x3E, 0x55, 0xAB, 0x47, 0x3E };
-        static private Byte[] _Color_Brown  =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x97, 0x37, 0x06, 0x3F, 0x71, 0x53, 0xBF, 0x3E, 0xA2, 0x0F, 0x85, 0x3E };
-        static private Byte[] _Color_White  =   { 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0x66, 0x66, 0x26, 0x3F, 0xEA, 0xA0, 0x4E, 0x3F, 0xDA, 0x60, 0x40, 0x3F, 0xFF, 0xDA, 0x11, 0x3F };
-        //static private Byte[] _SearchPattern = { 0x24, 0x74, 0x75, 0x74, 0x6F, 0x72, 0x69, 0x61, 0x6C }; // $tutorial
-        static public char[] NameAllowedCharacters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+        static private int _currentCharacterBeardPosition;
+        static private int _currentCharacterHairPosition;
+        static private int _currentCharacterHairColorPosition;
 
-        static public void Initialize(String Character)
+        static public String[] BeardsUi = { "No beard", "Braided 1", "Braided 2", "Braided 3", "Braided 4", "Long 1", "Long 2", "Short 1", "Short 2", "Short 3", "Thick 1" };
+        static public String[] BeardsInternal = { "BeardNone", "Beard5", "Beard6", "Beard9", "Beard10", "Beard1", "Beard2", "Beard3", "Beard4", "Beard7", "Beard8" };
+        static public String[] HairsUi = { "No hair", "Braided 1", "Braided 2", "Braided 3", "Braided 4", "Long 1", "Ponytail 1", "Ponytail 2", "Ponytail 3", "Ponytail 4", "Short 1", "Short 2", "Side Swept 1", "Side Swept 2", "Side Swept 3" };
+        static public String[] HairsInternal = { "HairNone", "Hair3", "Hair11", "Hair12", "Hair13", "Hair6", "Hair1", "Hair2", "Hair4", "Hair7", "Hair5", "Hair8", "Hair9", "Hair10", "Hair14" };
+
+        public static HashSet<HairColorPreset> HairColorPresets = new HashSet<HairColorPreset>
         {
-            foreach (String file in _FCH_files)
+            new HairColorPreset { Name = "Black", Red = 0.106f, Green = 0.1f, Blue = 0.075f },
+            new HairColorPreset { Name = "Blonde", Red = 1f, Green = 0.71f, Blue = 0.49f },
+            new HairColorPreset { Name = "Ginger", Red = 0.70f, Green = 0.34f, Blue = 0.20f },
+            new HairColorPreset { Name = "Brown", Red = 0.525f, Green = 0.374f, Blue = 0.26f },
+            new HairColorPreset { Name = "White", Red = 0.81f, Green = 0.75f, Blue = 0.57f },
+        };
+        
+        public class HairColorPreset
+        {
+            public string Name;
+            public float Red;
+            public float Green;
+            public float Blue;
+        }
+
+        static public void Initialize(String character)
+        {
+            foreach (String file in _fchFiles)
             {
-                if (Character == Path.GetFileNameWithoutExtension(file))
+                if (character == Path.GetFileNameWithoutExtension(file))
                 {
-                    SelectedCharacterFile = (file);
+                    CurrentCharacter = new Character();
+                    var data = Util.ReadFileBytes(file);
+                    
+                    CurrentCharacter = Util.ParseCharacterData(data);
+                    // TODO check if data is correct
+                    
+                    CurrentCharacter.FileName = character;
+                    CurrentCharacter.Path = file;
+
+                    closestPreset = FindClosestPreset(CurrentCharacter.HairColor);
                     return;
                 }
             }
@@ -49,20 +69,22 @@ namespace ValheimCharacterEditor
             Application.Exit();
         }
 
-        static public bool isCorrectName(String Name)
+        static public bool IsCorrectName(String name)
         {
             // Check content
-            if (String.IsNullOrEmpty(Name))
+            if (String.IsNullOrEmpty(name))
                 return false;
 
             // Check length
-            if (Name.Length < 3 || Name.Length > 15)
+            if (name.Length < 3 || name.Length > 15)
                 return false;
 
             // Check allowed characters
-            for (int i = 0; i < Name.Length; i++)
+            // Game way of checking valid names is complicated, this is just an approximation 
+            // It doesn't have to be perfect, ex. game doesn't allow to use numbers but they work just fine
+            foreach (var t in name)
             {
-                if (!NameAllowedCharacters.Contains(Name[i]))
+                if (!char.IsLetter(t) || t != ' ')
                     return false;
             }
 
@@ -86,210 +108,51 @@ namespace ValheimCharacterEditor
                 }
             }
 
-            _FCH_files = Directory.GetFiles(dir, "*.fch");
-            Characters = new string[_FCH_files.Length];
-            for (int i = 0; i < _FCH_files.Length; i++)
+            _fchFiles = Directory.GetFiles(dir, "*.fch");
+            Characters = new string[_fchFiles.Length];
+            for (int i = 0; i < _fchFiles.Length; i++)
             {
-                Characters[i] = Path.GetFileNameWithoutExtension(_FCH_files[i]);
+                Characters[i] = Path.GetFileNameWithoutExtension(_fchFiles[i]);
             }
 
-            if (_FCH_files.Length == 0)
+            if (_fchFiles.Length == 0)
             {
                 MessageBox.Show("No character data files found.", "ERROR", MessageBoxButtons.OK);
                 Application.Exit();
             }
         }
 
-        static public bool CheckCustomization()
+        // very simple, could probably be done better in the future
+        public static HairColorPreset FindClosestPreset(Vector3 color)
         {
-            // Read character file
-            byte[] data = Util.ReadFileBytes(SelectedCharacterFile);
-
-            // Check if anything was read
-            if (data.Length == 0)
+            HairColorPreset closestPreset = HairColorPresets.First(); 
+            float lowestDist = 2;   // just has to be larger than sqrt(2)
+            foreach (var preset in HairColorPresets)
             {
-                MessageBox.Show("Character file is empty.", "ERROR", MessageBoxButtons.OK);
-                return false;
+                // distance between points in 3d space
+                float distance = Math.Abs(preset.Red * preset.Green * preset.Blue - color.X * color.Y * color.Z);
+                if (distance <= lowestDist)
+                {
+                    lowestDist = distance;
+                    closestPreset = preset;
+                }
             }
 
-            // Search keywords like "Beard" and "Hair"
-            int beard = Util.FindInBytes(data, Encoding.UTF8.GetBytes("Beard"));
-            int hair = Util.FindInBytes(data, Encoding.UTF8.GetBytes("Hair"));
-
-            // If any of the keywords is not found the character file is not valid
-            if (beard == 0 || hair == 0)
-            {
-                MessageBox.Show("This character cannot be customized because character customization data was not found.", "ERROR", MessageBoxButtons.OK);
-                return false;
-            }
-
-            return true;
+            return closestPreset;
         }
 
-        static public bool ReadCustomization()
+        static public void InternalToName()
         {
-            int beard_length;
-            byte[] beard;
-            int hair_length;
-            byte[] hair;
-
-            // Read character file
-            byte[] data = Util.ReadFileBytes(SelectedCharacterFile);
-
-            // Check if anything was read
-            if (data.Length == 0)
-            {
-                MessageBox.Show("Character file is empty.", "ERROR", MessageBoxButtons.OK);
-                return false;
-            }
-
             // Get beard
-            // As beard is checked in CheckAppareance() there is no need to check if position == 0
-            _CurrentCharacterBeardPosition = Util.FindInBytes(data, Encoding.UTF8.GetBytes("Beard"));
-            beard_length = data[_CurrentCharacterBeardPosition];
-            beard = Util.ReadBytesArray(data, _CurrentCharacterBeardPosition + 1, beard_length);
-
-            if (_Beards_Internal.Contains(Encoding.UTF8.GetString(beard)))
-                SelectedCharacterBeard = Beards_UI[Util.FindInArrayString(_Beards_Internal, Encoding.UTF8.GetString(beard))];
-            else
-                return false;
+            if (BeardsInternal.Contains(CurrentCharacter.Beard))
+                SelectedCharacterBeard = BeardsUi[Util.FindInArrayString(BeardsInternal, CurrentCharacter.Beard)];
 
             // Get hair
-            // As hair is checked in CheckAppareance() there is no need to check if position == 0
-            _CurrentCharacterHairPosition = Util.FindInBytes(data, Encoding.UTF8.GetBytes("Hair"));
-            hair_length = data[_CurrentCharacterHairPosition];
-            _CurrentCharacterHairColorPosition = _CurrentCharacterHairPosition + hair_length + 1;
-            hair = Util.ReadBytesArray(data, _CurrentCharacterHairPosition + 1, hair_length);
-
-            if (_Hairs_Internal.Contains(Encoding.UTF8.GetString(hair)))
-                SelectedCharacterHair = Hairs_UI[Util.FindInArrayString(_Hairs_Internal, Encoding.UTF8.GetString(hair))];
-            else
-                return false;
-
-            return true;
+            if (HairsInternal.Contains(CurrentCharacter.Hair))
+                SelectedCharacterHair = HairsUi[Util.FindInArrayString(HairsInternal, CurrentCharacter.Hair)];
         }
 
-        static private byte[] _GetHairColor(String HairColor_UI)
-        {
-            byte[] result = { };
-
-            if (HairColor_UI.Equals(Hair_Colors[0]))
-            {
-                result = _Color_Black;
-            }
-            else if (HairColor_UI.Equals(Hair_Colors[1]))
-            {
-                result = _Color_Blonde;
-            }
-            else if (HairColor_UI.Equals(Hair_Colors[2]))
-            {
-                result = _Color_Ginger;
-            }
-            else if (HairColor_UI.Equals(Hair_Colors[3]))
-            {
-                result = _Color_Brown;
-            }
-            else if (HairColor_UI.Equals(Hair_Colors[4]))
-            {
-                result = _Color_White;
-            }
-
-            return result;
-        }
-
-        static private byte[] _ReconstructCharacterFile(byte[] array, int current_length, int new_length, int position)
-        {
-            byte[] new_array = { };
-
-            if (current_length == new_length)
-                return array;
-
-            // Reconstruct byte array
-            new_array = new byte[array.Length + (new_length - current_length)];
-
-            for (int i = 0; i < position; i++)
-            {
-                new_array[i] = array[i];
-            }
-
-            for (int i = position + current_length; i < array.Length; i++)
-            {
-                new_array[i - current_length + new_length] = array[i];
-            }
-
-            // Reconstruct FCH header and recalculate positions
-            // Header is saved in little-endian
-            byte[] bHeader = { array[3], array[2], array[1], array[0] };
-
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(bHeader);
-
-            int iHeader = BitConverter.ToInt32(bHeader, 0);
-            byte[] bNewHeader = BitConverter.GetBytes(iHeader + (new_length - current_length));
-
-            _CurrentCharacterHairPosition += new_length - current_length;
-            _CurrentCharacterHairColorPosition += new_length - current_length;
-
-            for (int i = 0; i < 4; i++)
-            {
-                new_array[i] = bNewHeader[i];
-            }
-
-            return new_array;
-        }
-
-        static private bool _WriteCustomization(String Beard_UI, String Hair_UI, String HairColor_UI)
-        {
-            // Get selected customization data
-            byte[] Beard = Encoding.UTF8.GetBytes(_Beards_Internal[Util.FindInArrayString(Beards_UI, Beard_UI)]);
-            byte[] Hair = Encoding.UTF8.GetBytes(_Hairs_Internal[Util.FindInArrayString(Hairs_UI, Hair_UI)]);
-            byte[] HairColor = _GetHairColor(HairColor_UI);
-
-            // Read character file
-            byte[] data = Util.ReadFileBytes(SelectedCharacterFile);
-
-            // Check if anything was read
-            if (data.Length == 0)
-            {
-                MessageBox.Show("Character file is empty.", "ERROR", MessageBoxButtons.OK);
-                return false;
-            }
-
-            // Reconstruct data incase there is any length difference in beard and hair (hair color is always 0x18)
-            data = _ReconstructCharacterFile(data, data[_CurrentCharacterBeardPosition], Beard.Length, _CurrentCharacterBeardPosition + 1);
-            data = _ReconstructCharacterFile(data, data[_CurrentCharacterHairPosition], Hair.Length, _CurrentCharacterHairPosition + 1);
-
-            // Write beard
-            data[_CurrentCharacterBeardPosition] = (byte)Beard.Length;
-            data = Util.WriteBytesArray(data, _CurrentCharacterBeardPosition + 1, Beard, 0, Beard.Length);
-
-            // Write hair
-            _CurrentCharacterHairPosition = _CurrentCharacterBeardPosition + Beard.Length + 1;
-            data[_CurrentCharacterHairPosition] = (byte)Hair.Length;
-            data = Util.WriteBytesArray(data, _CurrentCharacterHairPosition + 1, Hair, 0, Hair.Length);
-
-            // Write hair color
-            _CurrentCharacterHairColorPosition = _CurrentCharacterHairPosition + Hair.Length + 1;
-            data = Util.WriteBytesArray(data, _CurrentCharacterHairColorPosition, HairColor, 0, HairColor.Length);
-
-            // Save file
-            File.WriteAllBytes(SelectedCharacterFile, data);
-
-            return true;
-        }
-
-        static private bool _WriteName(String Name) // TODO
-        {
-            // Dont write a null Name
-            if (String.IsNullOrEmpty(Name))
-                return true;
-
-            // WriteName
-
-            return true;
-        }
-
-        static public bool WriteCustomization (String Beard_UI, String Hair_UI, String HairColor_UI, String Name = null)
+        static public bool WriteCustomization ()
         {
             // Check again if game is running to avoid problems
             if (Util.isGameRunning())
@@ -297,12 +160,136 @@ namespace ValheimCharacterEditor
                 MessageBox.Show("Please close Valheim before editing your character.", "ERROR", MessageBoxButtons.OK);
                 Application.Exit();
             }
+            String dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"AppData\LocalLow\IronGate\Valheim\characters");
+            var characterBytes = Util.WriteCharacterData(CurrentCharacter);
+            Util.WriteFileBytes(dir + "\\" +CurrentCharacter.Name + ".fch", characterBytes);
 
-            // Write the new customization
-            if (_WriteName(Name) && _WriteCustomization(Beard_UI, Hair_UI, HairColor_UI))
-                return true;
-            else
-                return false;
+            // TODO add check to see if WriteFileBytes is successful and backups
+            return true;
+        }
+
+        public class Vector3
+        {
+            public float X;
+            public float Y;
+            public float Z;
+        }
+        public class Character
+        {
+            public enum Biome
+            {
+                None,
+                Meadows,
+                Swamp,
+                Mountain = 4,
+                BlackForest = 8,
+                Plains = 16,
+                AshLands = 32,
+                DeepNorth = 64,
+                Ocean = 256,
+                Mistlands = 512,
+                BiomesMax
+            }
+
+            public enum SkillName
+            {
+                None,
+                Swords,
+                Knives,
+                Clubs,
+                Polearms,
+                Spears,
+                Blocking,
+                Axes,
+                Bows,
+                FireMagic,
+                FrostMagic,
+                Unarmed,
+                Pickaxes,
+                WoodCutting,
+                Jump = 100,
+                Sneak,
+                Run,
+                Swim,
+                All = 999
+            }
+
+            public string Beard = "";
+            public List<Biome> Biomes;
+            public int Builds;
+            public int Crafts;
+            public int Deaths;
+            public string FileName = "";
+            public List<Food> Foods;
+            public string GuardianPower;
+            public float GuardianPowerCooldown;
+            public string Hair = "";
+            public Vector3 HairColor;
+            public float Hp;
+            public long Id;
+            public List<Item> Inventory;
+            public bool IsFirstSpawn;
+            public int Kills;
+            public List<string> KnownMaterials;
+            public float MaxHp = 0;
+            public int Model;
+            public string Name = "";
+            public string Path = "";
+            public List<string> Recipes;
+            public List<string> ShownTutorials;
+            public List<Skill> Skills;
+            public Vector3 SkinColor;
+            public float Stamina;
+            public string StartSeed = "";
+            public Dictionary<string, int> Stations = new Dictionary<string, int>();
+            public Dictionary<string, string> Texts = new Dictionary<string, string>();
+            public float TimeSinceDeath;
+            public List<string> Trophies;
+            public List<string> Uniques;
+            public Dictionary<long, World> WorldsData = new Dictionary<long, World>();
+            public int DataVersion;
+            public int SkillsVersion;
+            public int InventoryVersion;
+            public int CharacterVersion;
+
+            public class World
+            {
+                public Vector3 DeathPoint = new Vector3();
+                public bool HasCustomSpawnPoint;
+                public bool HasDeathPoint;
+                public bool HasLogoutPoint;
+                public Vector3 HomePoint = new Vector3();
+                public Vector3 LogoutPoint = new Vector3();
+                public byte[] MapData;
+                public Vector3 SpawnPoint = new Vector3();
+            }
+
+            public class Item
+            {
+                public long CrafterId;
+                public string CrafterName;
+                public float Durability;
+                public bool Equipped;
+                public string Name;
+                public Tuple<int, int> Pos;
+                public int Quality;
+                public int Stack;
+                public int Variant;
+            }
+
+            public class Food
+            {
+                public float HpLeft;
+                public string Name;
+                public float StaminaLeft;
+            }
+
+            public class Skill
+            {
+                public float Level;
+                public SkillName SkillName;
+                public float Something;
+            }
         }
     }
 }
