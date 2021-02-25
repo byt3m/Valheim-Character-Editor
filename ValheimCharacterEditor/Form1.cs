@@ -131,6 +131,13 @@ namespace ValheimCharacterEditor
                 return;
             }
 
+            // Check name length
+            if (!(textBox_Name.Text.Length >= 3 && textBox_Name.Text.Length <= 15))
+            {
+                MessageBox.Show("Name must be between 3 and 15 characters.", "ERROR", MessageBoxButtons.OK);
+                return;
+            }
+
             try
             {
                 // Ask to continue and write customization

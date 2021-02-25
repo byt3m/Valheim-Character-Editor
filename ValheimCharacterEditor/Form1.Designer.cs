@@ -121,7 +121,6 @@ namespace ValheimCharacterEditor
             // 
             // textBox_Name
             // 
-            this.textBox_Name.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.textBox_Name.Enabled = false;
             this.textBox_Name.ForeColor = System.Drawing.Color.Black;
             this.textBox_Name.Location = new System.Drawing.Point(26, 89);
