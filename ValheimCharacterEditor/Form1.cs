@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Windows.Forms;
 using System.Linq;
 
@@ -7,7 +6,8 @@ namespace ValheimCharacterEditor
 {
     public partial class Form1 : Form
     {
-        private string[] presetNames;
+        private string[] _presetNames;
+
         public Form1()
         {
             InitializeComponent();
@@ -42,16 +42,16 @@ namespace ValheimCharacterEditor
             }
 
             // Populate forms with data
-            comboBox_Characters.DataSource = Customization.Characters;
+            comboBox_Characters.DataSource = Util.GetCharactersNames(Customization.FoundCharacters);
             comboBox_Characters.SelectedIndex = -1;
-            comboBox_Beard.DataSource = Customization.BeardsUi;
-            comboBox_Hair.DataSource = Customization.HairsUi;
+            comboBox_Beard.DataSource = ValheimEngine.BeardsUI;
+            comboBox_Hair.DataSource = ValheimEngine.HairsUI;
             
-            presetNames = new string[Customization.HairColorPresets.Count];
-            for(var i = 0; i < Customization.HairColorPresets.Count; i++)
-                presetNames[i] = Customization.HairColorPresets.ElementAt(i).Name;
+            _presetNames = new string[Customization.HairColorPresets.Count];
+            for(int i = 0; i < Customization.HairColorPresets.Count; i++)
+                _presetNames[i] = Customization.HairColorPresets.ElementAt(i).Name;
 
-            comboBox_HairColor.DataSource = presetNames;
+            comboBox_HairColor.DataSource = _presetNames;
         }
 
         private void Form1_move(object sender, MouseEventArgs e)
@@ -71,36 +71,9 @@ namespace ValheimCharacterEditor
             WindowState = FormWindowState.Minimized;
         }
 
-        private void textBox_Name_TextChanged(object sender, EventArgs e)
-        {
-            if (String.IsNullOrEmpty(textBox_Name.Text))
-                return;
-
-            String new_text = "";
-
-            foreach (var t in textBox_Name.Text)
-            {
-                if (char.IsLetter(t) || t == ' ')
-                {
-                    new_text += t;
-                }
-            }
-
-            textBox_Name.Text = new_text;
-            textBox_Name.Select(textBox_Name.Text.Length, 0);
-        }
-
-        private void checkBox_ChangeName_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox_ChangeName.Checked)
-                textBox_Name.Enabled = true;
-            else
-                textBox_Name.Enabled = false;
-        }
-
         private void comboBox_Characters_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Customization.FirstRun)
+            if (Customization.FirstRun || String.IsNullOrEmpty(comboBox_Characters.SelectedItem.ToString()))
             {
                 return;
             }        
@@ -110,16 +83,14 @@ namespace ValheimCharacterEditor
                 // Initialize
                 Customization.Initialize(comboBox_Characters.SelectedItem.ToString());
 
-                // Interpret internal names as a human readable ones (beard and hair)
-                Customization.InternalToName();
-
                 // Put appearance in gui
-                comboBox_Beard.SelectedIndex = comboBox_Beard.FindStringExact(Customization.SelectedCharacterBeard);
-                comboBox_Hair.SelectedIndex = comboBox_Hair.FindStringExact(Customization.SelectedCharacterHair);
-                comboBox_HairColor.SelectedIndex = comboBox_HairColor.FindStringExact(Customization.closestPreset.Name);
-                textBox_Name.Text = Customization.CurrentCharacter.Name;
+                comboBox_Beard.SelectedIndex = comboBox_Beard.FindStringExact(ValheimEngine.BeardsUI[Util.FindInArrayString(ValheimEngine.BeardsInternal, Customization.SelectedCharacter.Data.Beard)]);
+                comboBox_Hair.SelectedIndex = comboBox_Hair.FindStringExact(ValheimEngine.HairsUI[Util.FindInArrayString(ValheimEngine.HairsInternal, Customization.SelectedCharacter.Data.Hair)]);
+                comboBox_HairColor.SelectedIndex = comboBox_HairColor.FindStringExact(Customization.SelectedCharacter.HairColorPreset.Name);
+                textBox_Name.Text = Customization.SelectedCharacter.Data.Name;
 
                 // Enable gui elements
+                textBox_Name.Enabled = true;
                 comboBox_Beard.Enabled = true;
                 comboBox_Hair.Enabled = true;
                 comboBox_HairColor.Enabled = true;
@@ -134,6 +105,7 @@ namespace ValheimCharacterEditor
         private void _Refresh()
         {
             // Disable forms to avoid a crash
+            textBox_Name.Enabled = false;
             comboBox_Beard.Enabled = false;
             comboBox_Hair.Enabled = false;
             comboBox_HairColor.Enabled = false;
@@ -152,24 +124,16 @@ namespace ValheimCharacterEditor
         private void button_Apply_Click(object sender, EventArgs e)
         {
             // Check GUI elements content
-            if (String.IsNullOrEmpty(comboBox_Characters.SelectedItem.ToString()) || String.IsNullOrEmpty(comboBox_Beard.SelectedItem.ToString()) ||
-                String.IsNullOrEmpty(comboBox_Hair.SelectedItem.ToString()) || String.IsNullOrEmpty(comboBox_HairColor.SelectedItem.ToString()))
+            if (String.IsNullOrEmpty(comboBox_Beard.SelectedItem.ToString()) || String.IsNullOrEmpty(textBox_Name.Text) ||
+                String.IsNullOrEmpty(comboBox_Hair.SelectedItem.ToString())  || String.IsNullOrEmpty(comboBox_HairColor.SelectedItem.ToString()))
             {
-                MessageBox.Show("At least character, beard, hair and color must be chosen.", "ERROR", MessageBoxButtons.OK);
-                return;
-            }
-
-            // Check name if enabled
-            if (checkBox_ChangeName.Checked && String.IsNullOrEmpty(textBox_Name.Text) && !Customization.IsCorrectName(textBox_Name.Text))
-            {
-                MessageBox.Show("Name must contain ONLY letters (A-Z) and stay between 3 and 15 characters long.", "ERROR", MessageBoxButtons.OK);
+                MessageBox.Show("Please fill in every field under Character customization.", "ERROR", MessageBoxButtons.OK);
                 return;
             }
 
             try
             {
-                // WRITE CUSTOMIZATION WITH NAME
-                // Ask to continue
+                // Ask to continue and write customization
                 DialogResult continue_with_write = MessageBox.Show("The following customization will be applied:\n\t- Name: " +
                                                             textBox_Name.Text + "\n\t- Beard: " +
                                                             comboBox_Beard.SelectedItem.ToString() + ".\n\t- Hair: " +
@@ -180,23 +144,17 @@ namespace ValheimCharacterEditor
                     return;
 
                 // Make a backup of the selected character file
-                if (!Util.BackupFile(Customization.CurrentCharacter.Path))
+                if (!Util.BackupFile(Customization.SelectedCharacter.File))
                 {
                     MessageBox.Show("Error while backing up character file.", "ERROR", MessageBoxButtons.OK);
                     return;
                 }
 
                 // Apply changes from the form into CurrentCharacter
-                Customization.CurrentCharacter.Name = textBox_Name.Text;
-                Customization.CurrentCharacter.Hair = Customization.HairsInternal[Array.IndexOf(Customization.HairsUi, comboBox_Hair.SelectedItem)];
-                Customization.CurrentCharacter.Beard = Customization.BeardsInternal[Array.IndexOf(Customization.BeardsUi, comboBox_Beard.SelectedItem)];
-                int index = Array.IndexOf(presetNames, comboBox_HairColor.Text);
-                Customization.CurrentCharacter.HairColor = new Customization.Vector3
-                {
-                    X = Customization.HairColorPresets.ElementAt(index).Red,
-                    Y = Customization.HairColorPresets.ElementAt(index).Green,
-                    Z = Customization.HairColorPresets.ElementAt(index).Blue,
-                };
+                Customization.SelectedCharacter.Data.Name = textBox_Name.Text;
+                Customization.SelectedCharacter.Data.Hair = ValheimEngine.HairsInternal[Array.IndexOf(ValheimEngine.HairsUI, comboBox_Hair.SelectedItem)];
+                Customization.SelectedCharacter.Data.Beard = ValheimEngine.BeardsInternal[Array.IndexOf(ValheimEngine.BeardsUI, comboBox_Beard.SelectedItem)];
+                Customization.SelectedCharacter.Data.HairColor = Customization.GetHairColor(Array.IndexOf(_presetNames, comboBox_HairColor.Text));
 
                 // Write customization, if fail restore backup
                 if (Customization.WriteCustomization())
@@ -218,9 +176,23 @@ namespace ValheimCharacterEditor
             }
         }
 
-        private void button_RepairCharacter_Click(object sender, EventArgs e)
+        private void textBox_Name_TextChanged(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(textBox_Name.Text))
+                return;
 
+            String new_text = "";
+
+            for (int i = 0; i < textBox_Name.Text.Length; i++)
+            {
+                if (!ValheimEngine.NameDisallowedCharacters.Contains(textBox_Name.Text[i]))
+                {
+                    new_text += textBox_Name.Text[i];
+                }
+            }
+
+            textBox_Name.Text = new_text;
+            textBox_Name.Select(textBox_Name.Text.Length, 0);
         }
     }
 }
