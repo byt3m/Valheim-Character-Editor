@@ -20,13 +20,11 @@ Before editing a character, please make sure it is not a new character and that 
   5. Enjoy.
  
 # Known problems
-  - If your character appears naked, start the game, logout and then start the game again. This should resolve the problem.
-  - Sometimes a customization is not applied. You can fix it by closing Valheim and applying it again.
+  - If your character appears naked, start the game, logout and then start the game again. This wont likely happen with the new parser.
   - Steam sync seems to be causing problems when you change your character name. Disabling it is recommended.
-  - For some reason the game does not likes some customizations and may reset one or more of your skills.
+  - For some reason the game does not likes some customizations and may reset one or more of your skills. This wont likely happen with the new parser.
 
 # Whats coming next
-  - Add support on the name editor for names with spaces and special characters.
   - Edit hair color with a slider instead of predefined values.
   - Edit skin tones.
   - Edit gender.

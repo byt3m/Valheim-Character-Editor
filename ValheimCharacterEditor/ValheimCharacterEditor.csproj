@@ -95,6 +95,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parser.cs" />
+    <Compile Include="ValheimEngine.cs" />
     <Compile Include="Customization.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
