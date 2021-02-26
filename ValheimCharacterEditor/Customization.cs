@@ -12,20 +12,28 @@ namespace ValheimCharacterEditor
         static public Character[] FoundCharacters;
         static public Character SelectedCharacter = new Character();
              
-        static public HashSet<ValheimEngine.ColorPreset> HairColorPresets = new HashSet<ValheimEngine.ColorPreset>
+        static public HashSet<ColorPreset> HairColorPresets = new HashSet<ColorPreset>
         {
-            new ValheimEngine.ColorPreset { Name = "Black", Red = 0.106f, Green = 0.1f, Blue = 0.075f },
-            new ValheimEngine.ColorPreset { Name = "Blonde", Red = 1f, Green = 0.71f, Blue = 0.49f },
-            new ValheimEngine.ColorPreset { Name = "Ginger", Red = 0.70f, Green = 0.34f, Blue = 0.20f },
-            new ValheimEngine.ColorPreset { Name = "Brown", Red = 0.525f, Green = 0.374f, Blue = 0.26f },
-            new ValheimEngine.ColorPreset { Name = "White", Red = 0.81f, Green = 0.75f, Blue = 0.57f },
+            new ColorPreset { Name = "Black", Red = 0.106f, Green = 0.1f, Blue = 0.075f },
+            new ColorPreset { Name = "Blonde", Red = 1f, Green = 0.71f, Blue = 0.49f },
+            new ColorPreset { Name = "Ginger", Red = 0.70f, Green = 0.34f, Blue = 0.20f },
+            new ColorPreset { Name = "Brown", Red = 0.525f, Green = 0.374f, Blue = 0.26f },
+            new ColorPreset { Name = "White", Red = 0.81f, Green = 0.75f, Blue = 0.57f },
         };
 
         public class Character
         {
             public String File;
             public ValheimEngine.Character Data;
-            public ValheimEngine.ColorPreset ColorPreset;
+            public ColorPreset ColorPreset;
+        }
+
+        public class ColorPreset
+        {
+            public string Name;
+            public float Red;
+            public float Green;
+            public float Blue;
         }
 
         static public void Initialize(String name)
@@ -89,9 +97,9 @@ namespace ValheimCharacterEditor
             }
             GC.Collect();   // is it really that bad?
         }
-        public static ValheimEngine.ColorPreset FindClosestPreset(ValheimEngine.Vector3 color)
+        public static ColorPreset FindClosestPreset(ValheimEngine.Vector3 color)
         {
-            ValheimEngine.ColorPreset closestPreset = HairColorPresets.First(); 
+            ColorPreset closestPreset = HairColorPresets.First(); 
             float lowestDist = 2;   // just has to be larger than sqrt(3)
             foreach (var preset in HairColorPresets)
             {

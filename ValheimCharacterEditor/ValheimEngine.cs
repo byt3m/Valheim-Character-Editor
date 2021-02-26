@@ -12,14 +12,6 @@ namespace ValheimCharacterEditor
 
         static public String NameDisallowedCharacters = "0123456789,;.:-_´¨{}][+*`^¡¿'?=)(/&¬%$·#@!|ª\\º\"'";
 
-        public class ColorPreset
-        {
-            public string Name;
-            public float Red;
-            public float Green;
-            public float Blue;
-        }
-
         public class Vector3
         {
             public float X;
