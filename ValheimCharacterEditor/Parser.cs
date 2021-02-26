@@ -11,15 +11,18 @@ namespace ValheimCharacterEditor
     {
         public static ByteAccess LoadDataFromPath(string path)
         {
-            var fileStream = File.OpenRead(path);
-            var reader = new BinaryReader(fileStream);
-            var dataLength = reader.ReadInt32();
-            var data = reader.ReadBytes(dataLength);
-            //var hashLength = reader.ReadInt32();
-            //reader.ReadBytes(hashLength);   // hash is unused, why bother?
-            fileStream.Dispose();
-            return new ByteAccess(data);
+            using (var fileStream = File.OpenRead(path))
+            {
+                var reader = new BinaryReader(fileStream);
+                var dataLength = reader.ReadInt32();
+                var data = reader.ReadBytes(dataLength);
+                //var hashLength = reader.ReadInt32();
+                //reader.ReadBytes(hashLength);   // hash is unused, why bother?
+                return new ByteAccess(data);
+            }
         }
+
+        // TODO check if data is correct/makes sense
         static public ValheimEngine.Character CharacterReadData(string path)
         {
             // Read header
@@ -62,10 +65,11 @@ namespace ValheimCharacterEditor
             character.Id = byteAccess.ReadInt64();
             character.StartSeed = byteAccess.ReadString();
 
-            // Seems like a check incase character is new?
+            // Check if character has more player data
+            // Should be false for new characters
             if (!byteAccess.ReadBoolean()) return character;
 
-            var dataLength = byteAccess.ReadInt32(); // needs to be recalculated in case anything changes, strings
+            var dataLength = byteAccess.ReadInt32();
             character.DataVersion = byteAccess.ReadInt32();
 
             character.MaxHp = byteAccess.ReadSingle();
@@ -100,13 +104,13 @@ namespace ValheimCharacterEditor
                     character.Inventory.Add(item);
             }
 
-            // Read character info like recipes, trophies, tutoriales, etc
-            character.Recipes = new List<string>();
-            character.KnownMaterials = new List<string>();
-            character.ShownTutorials = new List<string>();
-            character.Uniques = new List<string>();
-            character.Trophies = new List<string>();
-            character.Biomes = new List<ValheimEngine.Character.Biome>(); // is this the discovered biomes?
+            // Read character info like recipes, trophies, tutorials, etc
+            character.Recipes = new HashSet<string>();
+            character.KnownMaterials = new HashSet<string>();
+            character.ShownTutorials = new HashSet<string>();
+            character.Uniques = new HashSet<string>();
+            character.Trophies = new HashSet<string>();
+            character.Biomes = new HashSet<ValheimEngine.Character.Biome>();
 
             var numberOfRecipes = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfRecipes; i++)
@@ -145,7 +149,7 @@ namespace ValheimCharacterEditor
             character.Hair = byteAccess.ReadString();
             character.SkinColor = byteAccess.ReadVector3();
             character.HairColor = byteAccess.ReadVector3();
-            character.Model = byteAccess.ReadInt32();
+            character.Gender = byteAccess.ReadInt32();
 
             // Read character state like food consumed, skills, etc.
             var numberOfConsumedFood = byteAccess.ReadInt32();
@@ -163,7 +167,7 @@ namespace ValheimCharacterEditor
 
             character.SkillsVersion = byteAccess.ReadInt32();
             var numberOfSkills = byteAccess.ReadInt32();
-            character.Skills = new List<ValheimEngine.Character.Skill>();
+            character.Skills = new HashSet<ValheimEngine.Character.Skill>();
             for (var i = 0; i < numberOfSkills; i++)
             {
                 var skill = new ValheimEngine.Character.Skill
@@ -205,8 +209,7 @@ namespace ValheimCharacterEditor
             byteAccess.Write(character.Name);
             byteAccess.Write(character.Id);
             byteAccess.Write(character.StartSeed);
-            byteAccess.Write(character.MaxHp != 0);
-
+            byteAccess.Write(character.DataVersion != 0);   // didn't save the check so have to create one
 
             //player data
             //need to turn data into hex, calculate size and put it before actual data
@@ -280,7 +283,7 @@ namespace ValheimCharacterEditor
                 byteAccess2.Write(character.Hair);
                 byteAccess2.Write(character.SkinColor);
                 byteAccess2.Write(character.HairColor);
-                byteAccess2.Write(character.Model);
+                byteAccess2.Write(character.Gender);
                 byteAccess2.Write(character.Foods.Count);
                 foreach (var food in character.Foods)
                 {
@@ -299,15 +302,15 @@ namespace ValheimCharacterEditor
                 }
             }
             byte[] playerData = byteAccess2.ToArray();
-            
-            
-            //calc size
+
+            // order:
+            // length of (playerData + data) + data + playerData + length of hash + hash
             byteAccess.Write(playerData.Length);
             byte[] data = byteAccess.ToArray();
             byte[] final = data.Concat(playerData).ToArray();
             byte[] length = BitConverter.GetBytes(final.Length);
             byte[] hashLength = BitConverter.GetBytes(64); // 512/8
-            byte[] hash = SHA512.Create().ComputeHash(final);   //unused but want to keep it
+            byte[] hash = SHA512.Create().ComputeHash(final);   // Unused but want to keep it
             byteAccess.Clear();
             byteAccess2.Clear();
 

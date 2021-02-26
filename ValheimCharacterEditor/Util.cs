@@ -15,14 +15,7 @@ namespace ValheimCharacterEditor
         {
             Process[] process = Process.GetProcessesByName("valheim");
 
-            if (process.Length == 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return process.Length != 0;
         }
 
         static public bool BackupFile(String file)
@@ -37,24 +30,15 @@ namespace ValheimCharacterEditor
 
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            
+            return false;
         }
 
         static public bool RestoreFile()
         {
             File.Copy(_LastBackup, _BeforeLastBackup, true);
 
-            if (File.Exists(_BeforeLastBackup))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return File.Exists(_BeforeLastBackup);
         }
 
         static public String OpenDirectoryDialog()
@@ -67,10 +51,8 @@ namespace ValheimCharacterEditor
                 {
                     return fbd.SelectedPath;
                 }
-                else
-                {
-                    return null;
-                }
+                
+                return null;
             }            
         }
 
