@@ -14,6 +14,7 @@ namespace ValheimCharacterEditor
              
         static public HashSet<ColorPreset> HairColorPresets = new HashSet<ColorPreset>
         {
+            new ColorPreset { Name = "Don't change"},     // values are set later
             new ColorPreset { Name = "Black", Red = 0.106f, Green = 0.1f, Blue = 0.075f },
             new ColorPreset { Name = "Blonde", Red = 1f, Green = 0.71f, Blue = 0.49f },
             new ColorPreset { Name = "Ginger", Red = 0.70f, Green = 0.34f, Blue = 0.20f },
@@ -44,7 +45,11 @@ namespace ValheimCharacterEditor
                 {
                     SelectedCharacter.Data = character.Data;
                     SelectedCharacter.File = character.File;
-                    SelectedCharacter.ColorPreset = FindClosestPreset(SelectedCharacter.Data.HairColor);
+                    // hacky way to avoid changing hair color to one of the presets
+                    HairColorPresets.ElementAt(0).Red = character.Data.HairColor.X;
+                    HairColorPresets.ElementAt(0).Green = character.Data.HairColor.Y;
+                    HairColorPresets.ElementAt(0).Blue = character.Data.HairColor.Z;
+                    SelectedCharacter.ColorPreset = new ColorPreset {Name = "Don't change"};
                     return;
                 }
             }
@@ -97,24 +102,6 @@ namespace ValheimCharacterEditor
             }
             GC.Collect();   // is it really that bad?
         }
-        public static ColorPreset FindClosestPreset(ValheimEngine.Vector3 color)
-        {
-            ColorPreset closestPreset = HairColorPresets.First(); 
-            float lowestDist = 2;   // just has to be larger than sqrt(3)
-            foreach (var preset in HairColorPresets)
-            {
-                // distance between points in 3d space
-                float distance = Math.Abs(preset.Red * preset.Green * preset.Blue - color.X * color.Y * color.Z);
-                if (distance <= lowestDist)
-                {
-                    lowestDist = distance;
-                    closestPreset = preset;
-                }
-            }
-
-            return closestPreset;
-        }
-
         static public bool WriteCustomization ()
         {
             // Check again if game is running to avoid problems
