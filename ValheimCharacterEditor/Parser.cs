@@ -3,102 +3,97 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Windows.Forms;
 
 namespace ValheimCharacterEditor
 {
     class Parser
     {
-        static public ValheimEngine.Character CharacterReadData(byte[] data)
+        public static ByteAccess LoadDataFromPath(string path)
+        {
+            var fileStream = File.OpenRead(path);
+            var reader = new BinaryReader(fileStream);
+            var dataLength = reader.ReadInt32();
+            var data = reader.ReadBytes(dataLength);
+            //var hashLength = reader.ReadInt32();
+            //reader.ReadBytes(hashLength);   // hash is unused, why bother?
+            fileStream.Dispose();
+            return new ByteAccess(data);
+        }
+        static public ValheimEngine.Character CharacterReadData(string path)
         {
             // Read header
             var character = new ValheimEngine.Character();
-            var stream = new MemoryStream(data);
-            var reader = new BinaryReader(stream);
-            var fileSize = reader.ReadInt32();
-            character.CharacterVersion = reader.ReadInt32(); // shouldn't be below 30
-            character.Kills = reader.ReadInt32();
-            character.Deaths = reader.ReadInt32();
-            character.Crafts = reader.ReadInt32();
-            character.Builds = reader.ReadInt32();
-            var numberOfWorlds = reader.ReadInt32();
-
+            var byteAccess = LoadDataFromPath(path);
+            if (byteAccess.Length() == 0)
+            {
+                MessageBox.Show("Could not read file.", "ERROR", MessageBoxButtons.OK);
+            }
+            character.CharacterVersion = byteAccess.ReadInt32(); // shouldn't be below 30
+            character.Kills = byteAccess.ReadInt32();
+            character.Deaths = byteAccess.ReadInt32();
+            character.Crafts = byteAccess.ReadInt32();
+            character.Builds = byteAccess.ReadInt32();
+            var numberOfWorlds = byteAccess.ReadInt32();
             // Read worlds information
             for (var i = 0; i < numberOfWorlds; i++)
             {
-                var worldId = reader.ReadInt64();
+                var worldId = byteAccess.ReadInt64();
                 var world = new ValheimEngine.Character.World
                 {
-                    HasCustomSpawnPoint = reader.ReadBoolean(),
-                    SpawnPoint = { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() },
-                    HasLogoutPoint = reader.ReadBoolean(),
-                    LogoutPoint = { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() },
-                    HasDeathPoint = reader.ReadBoolean(),
-                    DeathPoint = { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() },
-                    HomePoint = { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() },
+                    HasCustomSpawnPoint = byteAccess.ReadBoolean(),
+                    SpawnPoint = byteAccess.ReadVector3(),
+                    HasLogoutPoint = byteAccess.ReadBoolean(),
+                    LogoutPoint = byteAccess.ReadVector3(),
+                    HasDeathPoint = byteAccess.ReadBoolean(),
+                    DeathPoint = byteAccess.ReadVector3(),
+                    HomePoint = byteAccess.ReadVector3(),
                 };
-                if (reader.ReadBoolean())
+                if (byteAccess.ReadBoolean())
                 {
-                    var mapDataLength = reader.ReadInt32();
-                    var array = new byte[mapDataLength];
-                    var loop = 0;
-                    while (mapDataLength > 0)
-                    {
-                        var check = stream.Read(array, loop, mapDataLength);
-                        if (check == 0)
-                            break;
-                        loop += check;
-                        mapDataLength -= check;
-                    }
-
-                    if (loop != array.Length)
-                    {
-                        var array2 = new byte[loop];
-                        Buffer.BlockCopy(array, 0, array2, 0, loop);
-                        array = array2;
-                    }
-                    world.MapData = array;
+                    world.MapData = byteAccess.ReadBytes();
                 }
 
                 character.WorldsData.Add(worldId, world);
             }
 
             // Read main character info
-            character.Name = reader.ReadString();
-            character.Id = reader.ReadInt64();
-            character.StartSeed = reader.ReadString();
+            character.Name = byteAccess.ReadString();
+            character.Id = byteAccess.ReadInt64();
+            character.StartSeed = byteAccess.ReadString();
 
             // Seems like a check incase character is new?
-            if (!reader.ReadBoolean()) return character;
+            if (!byteAccess.ReadBoolean()) return character;
 
-            var dataLength = reader.ReadInt32(); // needs to be recalculated in case anything changes, strings
-            character.DataVersion = reader.ReadInt32();
+            var dataLength = byteAccess.ReadInt32(); // needs to be recalculated in case anything changes, strings
+            character.DataVersion = byteAccess.ReadInt32();
 
-            character.MaxHp = reader.ReadSingle();
-            character.Hp = reader.ReadSingle();
-            character.Stamina = reader.ReadSingle();
-            character.IsFirstSpawn = reader.ReadBoolean();
-            character.TimeSinceDeath = reader.ReadSingle();
-            character.GuardianPower = reader.ReadString();
-            character.GuardianPowerCooldown = reader.ReadSingle();
+            character.MaxHp = byteAccess.ReadSingle();
+            character.Hp = byteAccess.ReadSingle();
+            character.Stamina = byteAccess.ReadSingle();
+            character.IsFirstSpawn = byteAccess.ReadBoolean();
+            character.TimeSinceDeath = byteAccess.ReadSingle();
+            character.GuardianPower = byteAccess.ReadString();
+            character.GuardianPowerCooldown = byteAccess.ReadSingle();
 
             // Read inventory info
             character.Inventory = new List<ValheimEngine.Character.Item>();
-            character.InventoryVersion = reader.ReadInt32();
-            var numberOfItems = reader.ReadInt32();
+            character.InventoryVersion = byteAccess.ReadInt32();
+            var numberOfItems = byteAccess.ReadInt32();
 
             for (var i = 0; i < numberOfItems; i++)
             {
                 var item = new ValheimEngine.Character.Item
                 {
-                    Name = reader.ReadString(),
-                    Stack = reader.ReadInt32(),
-                    Durability = reader.ReadSingle(),
-                    Pos = new Tuple<int, int>(reader.ReadInt32(), reader.ReadInt32()),
-                    Equipped = reader.ReadBoolean(),
-                    Quality = reader.ReadInt32(),
-                    Variant = reader.ReadInt32(),
-                    CrafterId = reader.ReadInt64(),
-                    CrafterName = reader.ReadString()
+                    Name = byteAccess.ReadString(),
+                    Stack = byteAccess.ReadInt32(),
+                    Durability = byteAccess.ReadSingle(),
+                    Pos = new Tuple<int, int>(byteAccess.ReadInt32(), byteAccess.ReadInt32()),
+                    Equipped = byteAccess.ReadBoolean(),
+                    Quality = byteAccess.ReadInt32(),
+                    Variant = byteAccess.ReadInt32(),
+                    CrafterId = byteAccess.ReadInt64(),
+                    CrafterName = byteAccess.ReadString()
                 };
 
                 if (item.Name != "")
@@ -113,79 +108,69 @@ namespace ValheimCharacterEditor
             character.Trophies = new List<string>();
             character.Biomes = new List<ValheimEngine.Character.Biome>(); // is this the discovered biomes?
 
-            var numberOfRecipes = reader.ReadInt32();
+            var numberOfRecipes = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfRecipes; i++)
-                character.Recipes.Add(reader.ReadString());
+                character.Recipes.Add(byteAccess.ReadString());
 
-            var numberOfStations = reader.ReadInt32();
+            var numberOfStations = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfStations; i++)
-                character.Stations.Add(reader.ReadString(), reader.ReadInt32());
+                character.Stations.Add(byteAccess.ReadString(), byteAccess.ReadInt32());
 
-            var numberOfKnownMaterials = reader.ReadInt32();
+            var numberOfKnownMaterials = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfKnownMaterials; i++)
-                character.KnownMaterials.Add(reader.ReadString());
+                character.KnownMaterials.Add(byteAccess.ReadString());
 
-            var numberOfShownTutorials = reader.ReadInt32();
+            var numberOfShownTutorials = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfShownTutorials; i++)
-                character.ShownTutorials.Add(reader.ReadString());
+                character.ShownTutorials.Add(byteAccess.ReadString());
 
-            var numberOfUniques = reader.ReadInt32();
+            var numberOfUniques = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfUniques; i++)
-                character.Uniques.Add(reader.ReadString());
+                character.Uniques.Add(byteAccess.ReadString());
 
-            var numberOfTrophies = reader.ReadInt32();
+            var numberOfTrophies = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfTrophies; i++)
-                character.Trophies.Add(reader.ReadString());
+                character.Trophies.Add(byteAccess.ReadString());
 
-            var numberOfBiomes = reader.ReadInt32();
+            var numberOfBiomes = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfBiomes; i++)
-                character.Biomes.Add((ValheimEngine.Character.Biome)reader.ReadInt32());
+                character.Biomes.Add((ValheimEngine.Character.Biome)byteAccess.ReadInt32());
 
-            var numberOfTexts = reader.ReadInt32();
+            var numberOfTexts = byteAccess.ReadInt32();
             for (var i = 0; i < numberOfTexts; i++)
-                character.Texts.Add(reader.ReadString(), reader.ReadString());
+                character.Texts.Add(byteAccess.ReadString(), byteAccess.ReadString());
 
             // Read character appearance
-            character.Beard = reader.ReadString();
-            character.Hair = reader.ReadString();
-            character.SkinColor = new ValheimEngine.Vector3
-            {
-                X = reader.ReadSingle(),
-                Y = reader.ReadSingle(),
-                Z = reader.ReadSingle()
-            };
-            character.HairColor = new ValheimEngine.Vector3
-            {
-                X = reader.ReadSingle(),
-                Y = reader.ReadSingle(),
-                Z = reader.ReadSingle()
-            };
-            character.Model = reader.ReadInt32();
+            character.Beard = byteAccess.ReadString();
+            character.Hair = byteAccess.ReadString();
+            character.SkinColor = byteAccess.ReadVector3();
+            character.HairColor = byteAccess.ReadVector3();
+            character.Model = byteAccess.ReadInt32();
 
             // Read character state like food consumed, skills, etc.
-            var numberOfConsumedFood = reader.ReadInt32();
+            var numberOfConsumedFood = byteAccess.ReadInt32();
             character.Foods = new List<ValheimEngine.Character.Food>();
             for (var i = 0; i < numberOfConsumedFood; i++)
             {
                 var food = new ValheimEngine.Character.Food
                 {
-                    Name = reader.ReadString(),
-                    HpLeft = reader.ReadSingle(),
-                    StaminaLeft = reader.ReadSingle()
+                    Name = byteAccess.ReadString(),
+                    HpLeft = byteAccess.ReadSingle(),
+                    StaminaLeft = byteAccess.ReadSingle()
                 };
                 character.Foods.Add(food);
             }
 
-            character.SkillsVersion = reader.ReadInt32();
-            var numberOfSkills = reader.ReadInt32();
+            character.SkillsVersion = byteAccess.ReadInt32();
+            var numberOfSkills = byteAccess.ReadInt32();
             character.Skills = new List<ValheimEngine.Character.Skill>();
             for (var i = 0; i < numberOfSkills; i++)
             {
                 var skill = new ValheimEngine.Character.Skill
                 {
-                    SkillName = (ValheimEngine.Character.SkillName)reader.ReadInt32(),
-                    Level = reader.ReadSingle(),
-                    Something = reader.ReadSingle()
+                    SkillName = (ValheimEngine.Character.SkillName)byteAccess.ReadInt32(),
+                    Level = byteAccess.ReadSingle(),
+                    Something = byteAccess.ReadSingle()
                 };
                 character.Skills.Add(skill);
             }
@@ -195,154 +180,136 @@ namespace ValheimCharacterEditor
 
         static public byte[] CharacterWriteData(ValheimEngine.Character character)
         {
-            var stream = new MemoryStream();
-            var writer = new BinaryWriter(stream);
+            var byteAccess = new ByteAccess();
 
-            writer.Write(character.CharacterVersion);
-            writer.Write(character.Kills);
-            writer.Write(character.Deaths);
-            writer.Write(character.Crafts);
-            writer.Write(character.Builds);
-            writer.Write(character.WorldsData.Count);
+            byteAccess.Write(character.CharacterVersion);
+            byteAccess.Write(character.Kills);
+            byteAccess.Write(character.Deaths);
+            byteAccess.Write(character.Crafts);
+            byteAccess.Write(character.Builds);
+            byteAccess.Write(character.WorldsData.Count);
             foreach (var world in character.WorldsData)
             {
-                writer.Write(world.Key);
-                writer.Write(world.Value.HasCustomSpawnPoint);
-                writer.Write(world.Value.SpawnPoint.X);
-                writer.Write(world.Value.SpawnPoint.Y);
-                writer.Write(world.Value.SpawnPoint.Z);
-                writer.Write(world.Value.HasLogoutPoint);
-                writer.Write(world.Value.LogoutPoint.X);
-                writer.Write(world.Value.LogoutPoint.Y);
-                writer.Write(world.Value.LogoutPoint.Z);
-                writer.Write(world.Value.HasDeathPoint);
-                writer.Write(world.Value.DeathPoint.X);
-                writer.Write(world.Value.DeathPoint.Y);
-                writer.Write(world.Value.DeathPoint.Z);
-                writer.Write(world.Value.HomePoint.X);
-                writer.Write(world.Value.HomePoint.Y);
-                writer.Write(world.Value.HomePoint.Z);
-                writer.Write(world.Value.MapData != null);
-                writer.Write(character.WorldsData[world.Key].MapData.Length);
+                byteAccess.Write(world.Key);
+                byteAccess.Write(world.Value.HasCustomSpawnPoint);
+                byteAccess.Write(world.Value.SpawnPoint);
+                byteAccess.Write(world.Value.HasLogoutPoint);
+                byteAccess.Write(world.Value.LogoutPoint);
+                byteAccess.Write(world.Value.HasDeathPoint);
+                byteAccess.Write(world.Value.DeathPoint);
+                byteAccess.Write(world.Value.HomePoint);
+                byteAccess.Write(world.Value.MapData != null);
                 if (world.Value.MapData != null)
-                    writer.Write(world.Value.MapData);
+                    byteAccess.Write(world.Value.MapData);
             }
-            writer.Write(character.Name);
-            writer.Write(character.Id);
-            writer.Write(character.StartSeed);
-            writer.Write(character.MaxHp != 0);
+            byteAccess.Write(character.Name);
+            byteAccess.Write(character.Id);
+            byteAccess.Write(character.StartSeed);
+            byteAccess.Write(character.MaxHp != 0);
 
 
             //player data
             //need to turn data into hex, calculate size and put it before actual data
-            var stream2 = new MemoryStream();
-            var writer2 = new BinaryWriter(stream2);
+            var byteAccess2 = new ByteAccess();
             if (character.MaxHp != 0)
             {
-                writer2.Write(character.DataVersion);
-                writer2.Write(character.MaxHp);
-                writer2.Write(character.Hp);
-                writer2.Write(character.Stamina);
-                writer2.Write(character.IsFirstSpawn);
-                writer2.Write(character.TimeSinceDeath);
-                writer2.Write(character.GuardianPower);
-                writer2.Write(character.GuardianPowerCooldown);
-                writer2.Write(character.InventoryVersion);
-                writer2.Write(character.Inventory.Count);
+                byteAccess2.Write(character.DataVersion);
+                byteAccess2.Write(character.MaxHp);
+                byteAccess2.Write(character.Hp);
+                byteAccess2.Write(character.Stamina);
+                byteAccess2.Write(character.IsFirstSpawn);
+                byteAccess2.Write(character.TimeSinceDeath);
+                byteAccess2.Write(character.GuardianPower);
+                byteAccess2.Write(character.GuardianPowerCooldown);
+                byteAccess2.Write(character.InventoryVersion);
+                byteAccess2.Write(character.Inventory.Count);
 
                 foreach (var item in character.Inventory)
                 {
-                    writer2.Write(item.Name);
-                    writer2.Write(item.Stack);
-                    writer2.Write(item.Durability);
-                    writer2.Write(item.Pos.Item1);
-                    writer2.Write(item.Pos.Item2);
-                    writer2.Write(item.Equipped);
-                    writer2.Write(item.Quality);
-                    writer2.Write(item.Variant);
-                    writer2.Write(item.CrafterId);
-                    writer2.Write(item.CrafterName);
+                    byteAccess2.Write(item.Name);
+                    byteAccess2.Write(item.Stack);
+                    byteAccess2.Write(item.Durability);
+                    byteAccess2.Write(item.Pos.Item1);
+                    byteAccess2.Write(item.Pos.Item2);
+                    byteAccess2.Write(item.Equipped);
+                    byteAccess2.Write(item.Quality);
+                    byteAccess2.Write(item.Variant);
+                    byteAccess2.Write(item.CrafterId);
+                    byteAccess2.Write(item.CrafterName);
                 }
 
-                writer2.Write(character.Recipes.Count);
+                byteAccess2.Write(character.Recipes.Count);
                 foreach (var recipe in character.Recipes)
-                    writer2.Write(recipe);
+                    byteAccess2.Write(recipe);
 
-                writer2.Write(character.Stations.Count);
+                byteAccess2.Write(character.Stations.Count);
                 foreach (var station in character.Stations)
                 {
-                    writer2.Write(station.Key);
-                    writer2.Write(station.Value);
+                    byteAccess2.Write(station.Key);
+                    byteAccess2.Write(station.Value);
                 }
 
-                writer2.Write(character.KnownMaterials.Count);
+                byteAccess2.Write(character.KnownMaterials.Count);
                 foreach (var material in character.KnownMaterials)
-                    writer2.Write(material);
+                    byteAccess2.Write(material);
 
-                writer2.Write(character.ShownTutorials.Count);
+                byteAccess2.Write(character.ShownTutorials.Count);
                 foreach (var tutorial in character.ShownTutorials)
-                    writer2.Write(tutorial);
+                    byteAccess2.Write(tutorial);
 
-                writer2.Write(character.Uniques.Count);
+                byteAccess2.Write(character.Uniques.Count);
                 foreach (var unique in character.Uniques)
-                    writer2.Write(unique);
+                    byteAccess2.Write(unique);
 
-                writer2.Write(character.Trophies.Count);
+                byteAccess2.Write(character.Trophies.Count);
                 foreach (var trophy in character.Trophies)
-                    writer2.Write(trophy);
+                    byteAccess2.Write(trophy);
 
-                writer2.Write(character.Biomes.Count);
+                byteAccess2.Write(character.Biomes.Count);
                 foreach (var biome in character.Biomes)
-                    writer2.Write((int)biome);
+                    byteAccess2.Write((int)biome);
 
-                writer2.Write(character.Texts.Count);
+                byteAccess2.Write(character.Texts.Count);
                 foreach (var text in character.Texts)
                 {
-                    writer2.Write(text.Key);
-                    writer2.Write(text.Value);
+                    byteAccess2.Write(text.Key);
+                    byteAccess2.Write(text.Value);
                 }
 
-                writer2.Write(character.Beard);
-                writer2.Write(character.Hair);
-                writer2.Write(character.SkinColor.X);
-                writer2.Write(character.SkinColor.Y);
-                writer2.Write(character.SkinColor.Z);
-                writer2.Write(character.HairColor.X);
-                writer2.Write(character.HairColor.Y);
-                writer2.Write(character.HairColor.Z);
-                writer2.Write(character.Model);
-                writer2.Write(character.Foods.Count);
+                byteAccess2.Write(character.Beard);
+                byteAccess2.Write(character.Hair);
+                byteAccess2.Write(character.SkinColor);
+                byteAccess2.Write(character.HairColor);
+                byteAccess2.Write(character.Model);
+                byteAccess2.Write(character.Foods.Count);
                 foreach (var food in character.Foods)
                 {
-                    writer2.Write(food.Name);
-                    writer2.Write(food.HpLeft);
-                    writer2.Write(food.StaminaLeft);
+                    byteAccess2.Write(food.Name);
+                    byteAccess2.Write(food.HpLeft);
+                    byteAccess2.Write(food.StaminaLeft);
                 }
 
-                writer2.Write(character.SkillsVersion);
-                writer2.Write(character.Skills.Count);
+                byteAccess2.Write(character.SkillsVersion);
+                byteAccess2.Write(character.Skills.Count);
                 foreach (var skill in character.Skills)
                 {
-                    writer2.Write((int)skill.SkillName);
-                    writer2.Write(skill.Level);
-                    writer2.Write(skill.Something);
+                    byteAccess2.Write((int)skill.SkillName);
+                    byteAccess2.Write(skill.Level);
+                    byteAccess2.Write(skill.Something);
                 }
             }
-
-            writer2.Flush();
-            stream2.Flush();
-            byte[] playerData = stream2.ToArray();
-
+            byte[] playerData = byteAccess2.ToArray();
+            
+            
             //calc size
-            writer.Write(playerData.Length);
-
-            writer.Flush();
-            stream.Flush();
-            byte[] data = stream.ToArray();
+            byteAccess.Write(playerData.Length);
+            byte[] data = byteAccess.ToArray();
             byte[] final = data.Concat(playerData).ToArray();
             byte[] length = BitConverter.GetBytes(final.Length);
             byte[] hashLength = BitConverter.GetBytes(64); // 512/8
-            byte[] hash = SHA512.Create().ComputeHash(final);
+            byte[] hash = SHA512.Create().ComputeHash(final);   //unused but want to keep it
+            byteAccess.Clear();
+            byteAccess2.Clear();
 
             return length.Concat(final).ToArray().Concat(hashLength).ToArray().Concat(hash).ToArray();
         }

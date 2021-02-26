@@ -83,20 +83,14 @@ namespace ValheimCharacterEditor
             FoundCharacters = new Character[fchFiles.Length];
             for (int i = 0; i < fchFiles.Length; i++)
             {
-                byte[] fbytes = File.ReadAllBytes(fchFiles[i]);
-                if (fbytes.Length == 0)
+                FoundCharacters[i] = new Character
                 {
-                    MessageBox.Show("Could not read file \"" + fchFiles[i] + "\".", "ERROR", MessageBoxButtons.OK);
-                    continue;
-                }
-
-                FoundCharacters[i] = new Character();
-                FoundCharacters[i].File = fchFiles[i];
-                FoundCharacters[i].Data = Parser.CharacterReadData(fbytes);
+                    File = fchFiles[i], Data = Parser.CharacterReadData(fchFiles[i])
+                };
                 // TODO check if data is correct
             }
+            GC.Collect();   // is it really that bad?
         }
-
         public static ValheimEngine.HairColorPreset FindClosestPreset(ValheimEngine.Vector3 color)
         {
             ValheimEngine.HairColorPreset closestPreset = HairColorPresets.First(); 
