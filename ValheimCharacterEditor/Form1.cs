@@ -88,12 +88,14 @@ namespace ValheimCharacterEditor
                 comboBox_Hair.SelectedIndex = comboBox_Hair.FindStringExact(ValheimEngine.HairsUI[Util.FindInArrayString(ValheimEngine.HairsInternal, Customization.SelectedCharacter.Data.Hair)]);
                 comboBox_HairColor.SelectedIndex = comboBox_HairColor.FindStringExact(Customization.SelectedCharacter.HairColorPreset.Name);
                 textBox_Name.Text = Customization.SelectedCharacter.Data.Name;
+                checkBox_Female.Checked = Customization.SelectedCharacter.Data.Model == 1;
 
                 // Enable gui elements
                 textBox_Name.Enabled = true;
                 comboBox_Beard.Enabled = true;
                 comboBox_Hair.Enabled = true;
                 comboBox_HairColor.Enabled = true;
+                checkBox_Female.Enabled = true;
                 button_Apply.Enabled = true;
             }
             catch
@@ -109,6 +111,7 @@ namespace ValheimCharacterEditor
             comboBox_Beard.Enabled = false;
             comboBox_Hair.Enabled = false;
             comboBox_HairColor.Enabled = false;
+            checkBox_Female.Enabled = false;
             button_Apply.Enabled = false;
 
             // Make a first run again to avoid fully executing "comboBox_Characters_SelectedIndexChanged"
@@ -145,7 +148,8 @@ namespace ValheimCharacterEditor
                                                             textBox_Name.Text + "\n\t- Beard: " +
                                                             comboBox_Beard.SelectedItem.ToString() + ".\n\t- Hair: " +
                                                             comboBox_Hair.SelectedItem.ToString() + ".\n\t- Hair color: " +
-                                                            comboBox_HairColor.SelectedItem.ToString() + ".\n\n Do you want to continue?",
+                                                            comboBox_HairColor.SelectedItem.ToString() + ".\n\t- Gender: " +
+                                                            (checkBox_Female.Checked ? "Female" : "Male") + ".\n\n Do you want to continue?",
                                                             "WARNING", MessageBoxButtons.YesNo);
                 if (continue_with_write == DialogResult.No)
                     return;
@@ -162,6 +166,7 @@ namespace ValheimCharacterEditor
                 Customization.SelectedCharacter.Data.Hair = ValheimEngine.HairsInternal[Array.IndexOf(ValheimEngine.HairsUI, comboBox_Hair.SelectedItem)];
                 Customization.SelectedCharacter.Data.Beard = ValheimEngine.BeardsInternal[Array.IndexOf(ValheimEngine.BeardsUI, comboBox_Beard.SelectedItem)];
                 Customization.SelectedCharacter.Data.HairColor = Customization.GetHairColor(Array.IndexOf(_presetNames, comboBox_HairColor.Text));
+                Customization.SelectedCharacter.Data.Model = checkBox_Female.Checked ? 1 : 0;
 
                 // Write customization, if fail restore backup
                 if (Customization.WriteCustomization())

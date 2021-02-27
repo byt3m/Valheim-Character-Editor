@@ -47,6 +47,7 @@ namespace ValheimCharacterEditor
             this.button_Exit = new System.Windows.Forms.Button();
             this.label_Version = new System.Windows.Forms.Label();
             this.button_Minimize = new System.Windows.Forms.Button();
+            this.checkBox_Female = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -57,12 +58,13 @@ namespace ValheimCharacterEditor
             this.comboBox_Characters.FormattingEnabled = true;
             this.comboBox_Characters.Location = new System.Drawing.Point(26, 41);
             this.comboBox_Characters.Name = "comboBox_Characters";
-            this.comboBox_Characters.Size = new System.Drawing.Size(260, 21);
+            this.comboBox_Characters.Size = new System.Drawing.Size(260, 27);
             this.comboBox_Characters.TabIndex = 0;
             this.comboBox_Characters.SelectedIndexChanged += new System.EventHandler(this.comboBox_Characters_SelectedIndexChanged);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.checkBox_Female);
             this.groupBox1.Controls.Add(this.label_SelectChar);
             this.groupBox1.Controls.Add(this.comboBox_Characters);
             this.groupBox1.Controls.Add(this.comboBox_HairColor);
@@ -77,7 +79,7 @@ namespace ValheimCharacterEditor
             this.groupBox1.ForeColor = System.Drawing.Color.White;
             this.groupBox1.Location = new System.Drawing.Point(12, 38);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(314, 182);
+            this.groupBox1.Size = new System.Drawing.Size(314, 232);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Character customization";
@@ -87,7 +89,7 @@ namespace ValheimCharacterEditor
             this.label_SelectChar.AutoSize = true;
             this.label_SelectChar.Location = new System.Drawing.Point(23, 25);
             this.label_SelectChar.Name = "label_SelectChar";
-            this.label_SelectChar.Size = new System.Drawing.Size(95, 13);
+            this.label_SelectChar.Size = new System.Drawing.Size(113, 19);
             this.label_SelectChar.TabIndex = 10;
             this.label_SelectChar.Text = "Select character*:";
             // 
@@ -98,7 +100,7 @@ namespace ValheimCharacterEditor
             this.comboBox_HairColor.FormattingEnabled = true;
             this.comboBox_HairColor.Location = new System.Drawing.Point(165, 139);
             this.comboBox_HairColor.Name = "comboBox_HairColor";
-            this.comboBox_HairColor.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_HairColor.Size = new System.Drawing.Size(121, 27);
             this.comboBox_HairColor.TabIndex = 8;
             // 
             // label_HairColor
@@ -106,7 +108,7 @@ namespace ValheimCharacterEditor
             this.label_HairColor.AutoSize = true;
             this.label_HairColor.Location = new System.Drawing.Point(162, 123);
             this.label_HairColor.Name = "label_HairColor";
-            this.label_HairColor.Size = new System.Drawing.Size(62, 13);
+            this.label_HairColor.Size = new System.Drawing.Size(74, 19);
             this.label_HairColor.TabIndex = 9;
             this.label_HairColor.Text = "Hair color*";
             // 
@@ -115,7 +117,7 @@ namespace ValheimCharacterEditor
             this.label_Name.AutoSize = true;
             this.label_Name.Location = new System.Drawing.Point(23, 73);
             this.label_Name.Name = "label_Name";
-            this.label_Name.Size = new System.Drawing.Size(41, 13);
+            this.label_Name.Size = new System.Drawing.Size(51, 19);
             this.label_Name.TabIndex = 7;
             this.label_Name.Text = "Name*";
             // 
@@ -126,7 +128,7 @@ namespace ValheimCharacterEditor
             this.textBox_Name.Location = new System.Drawing.Point(26, 89);
             this.textBox_Name.MaxLength = 15;
             this.textBox_Name.Name = "textBox_Name";
-            this.textBox_Name.Size = new System.Drawing.Size(121, 22);
+            this.textBox_Name.Size = new System.Drawing.Size(121, 26);
             this.textBox_Name.TabIndex = 6;
             this.textBox_Name.TextChanged += new System.EventHandler(this.textBox_Name_TextChanged);
             // 
@@ -137,7 +139,7 @@ namespace ValheimCharacterEditor
             this.comboBox_Beard.FormattingEnabled = true;
             this.comboBox_Beard.Location = new System.Drawing.Point(165, 90);
             this.comboBox_Beard.Name = "comboBox_Beard";
-            this.comboBox_Beard.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_Beard.Size = new System.Drawing.Size(121, 27);
             this.comboBox_Beard.TabIndex = 4;
             // 
             // label_Beard
@@ -145,7 +147,7 @@ namespace ValheimCharacterEditor
             this.label_Beard.AutoSize = true;
             this.label_Beard.Location = new System.Drawing.Point(162, 73);
             this.label_Beard.Name = "label_Beard";
-            this.label_Beard.Size = new System.Drawing.Size(41, 13);
+            this.label_Beard.Size = new System.Drawing.Size(50, 19);
             this.label_Beard.TabIndex = 5;
             this.label_Beard.Text = "Beard*";
             // 
@@ -156,7 +158,7 @@ namespace ValheimCharacterEditor
             this.comboBox_Hair.FormattingEnabled = true;
             this.comboBox_Hair.Location = new System.Drawing.Point(26, 139);
             this.comboBox_Hair.Name = "comboBox_Hair";
-            this.comboBox_Hair.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_Hair.Size = new System.Drawing.Size(121, 27);
             this.comboBox_Hair.TabIndex = 2;
             // 
             // label_Hair
@@ -164,7 +166,7 @@ namespace ValheimCharacterEditor
             this.label_Hair.AutoSize = true;
             this.label_Hair.Location = new System.Drawing.Point(23, 123);
             this.label_Hair.Name = "label_Hair";
-            this.label_Hair.Size = new System.Drawing.Size(33, 13);
+            this.label_Hair.Size = new System.Drawing.Size(40, 19);
             this.label_Hair.TabIndex = 3;
             this.label_Hair.Text = "Hair*";
             // 
@@ -175,7 +177,7 @@ namespace ValheimCharacterEditor
             this.button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_Apply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_Apply.ForeColor = System.Drawing.Color.White;
-            this.button_Apply.Location = new System.Drawing.Point(125, 357);
+            this.button_Apply.Location = new System.Drawing.Point(127, 420);
             this.button_Apply.Name = "button_Apply";
             this.button_Apply.Size = new System.Drawing.Size(80, 28);
             this.button_Apply.TabIndex = 4;
@@ -187,7 +189,7 @@ namespace ValheimCharacterEditor
             // 
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(12, 226);
+            this.pictureBox1.Location = new System.Drawing.Point(12, 289);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(314, 125);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -214,7 +216,7 @@ namespace ValheimCharacterEditor
             this.label_Version.AutoSize = true;
             this.label_Version.Location = new System.Drawing.Point(3, 0);
             this.label_Version.Name = "label_Version";
-            this.label_Version.Size = new System.Drawing.Size(156, 13);
+            this.label_Version.Size = new System.Drawing.Size(190, 19);
             this.label_Version.TabIndex = 7;
             this.label_Version.Text = "Valheim Character Editor v1.4";
             // 
@@ -233,12 +235,22 @@ namespace ValheimCharacterEditor
             this.button_Minimize.UseVisualStyleBackColor = false;
             this.button_Minimize.Click += new System.EventHandler(this.button_Minimize_Click);
             // 
+            // checkBox_Female
+            // 
+            this.checkBox_Female.AutoSize = true;
+            this.checkBox_Female.Location = new System.Drawing.Point(26, 189);
+            this.checkBox_Female.Name = "checkBox_Female";
+            this.checkBox_Female.Size = new System.Drawing.Size(74, 23);
+            this.checkBox_Female.TabIndex = 11;
+            this.checkBox_Female.Text = "Female";
+            this.checkBox_Female.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(338, 405);
+            this.ClientSize = new System.Drawing.Size(338, 460);
             this.Controls.Add(this.button_Minimize);
             this.Controls.Add(this.label_Version);
             this.Controls.Add(this.button_Exit);
@@ -280,6 +292,7 @@ namespace ValheimCharacterEditor
         private System.Windows.Forms.Button button_Exit;
         private System.Windows.Forms.Label label_Version;
         private System.Windows.Forms.Button button_Minimize;
+        private System.Windows.Forms.CheckBox checkBox_Female;
     }
 }
 
