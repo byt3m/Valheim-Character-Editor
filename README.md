@@ -27,5 +27,4 @@ Before editing a character, please make sure it is not a new character and that 
 # Whats coming next
   - Edit hair color with a slider instead of predefined values.
   - Edit skin tones.
-  - Edit gender.
   - Possible inventory editor.
