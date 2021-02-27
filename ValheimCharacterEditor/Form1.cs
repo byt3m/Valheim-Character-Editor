@@ -86,7 +86,7 @@ namespace ValheimCharacterEditor
                 // Put appearance in gui
                 comboBox_Beard.SelectedIndex = comboBox_Beard.FindStringExact(ValheimEngine.BeardsUI[Util.FindInArrayString(ValheimEngine.BeardsInternal, Customization.SelectedCharacter.Data.Beard)]);
                 comboBox_Hair.SelectedIndex = comboBox_Hair.FindStringExact(ValheimEngine.HairsUI[Util.FindInArrayString(ValheimEngine.HairsInternal, Customization.SelectedCharacter.Data.Hair)]);
-                comboBox_HairColor.SelectedIndex = comboBox_HairColor.FindStringExact(Customization.SelectedCharacter.HairColorPreset.Name);
+                comboBox_HairColor.SelectedIndex = comboBox_HairColor.FindStringExact(Customization.SelectedCharacter.ColorPreset.Name);
                 textBox_Name.Text = Customization.SelectedCharacter.Data.Name;
                 checkBox_Female.Checked = Customization.SelectedCharacter.Data.Model == 1;
 
