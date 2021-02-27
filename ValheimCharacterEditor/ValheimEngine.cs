@@ -12,14 +12,6 @@ namespace ValheimCharacterEditor
 
         static public String NameDisallowedCharacters = "0123456789,;.:-_´¨{}][+*`^¡¿'?=)(/&¬%$·#@!|ª\\º\"'";
 
-        public class HairColorPreset
-        {
-            public string Name;
-            public float Red;
-            public float Green;
-            public float Blue;
-        }
-
         public class Vector3
         {
             public float X;
@@ -30,12 +22,11 @@ namespace ValheimCharacterEditor
         public class Character
         {
             public string Beard = "";
-            public List<Biome> Biomes;
+            public HashSet<Biome> Biomes;
             public int Builds;
             public int Crafts;
             public int Deaths;
-            public string FileName = "";
-            public List<Food> Foods;
+            public List<Food> Foods;    // digesting foods
             public string GuardianPower;
             public float GuardianPowerCooldown;
             public string Hair = "";
@@ -45,24 +36,23 @@ namespace ValheimCharacterEditor
             public List<Item> Inventory;
             public bool IsFirstSpawn;
             public int Kills;
-            public List<string> KnownMaterials;
-            public float MaxHp = 0;
-            public int Model;
+            public HashSet<string> KnownMaterials;
+            public float MaxHp;
+            public int Gender;  // 0 - male, 1 - female
             public string Name = "";
-            public string Path = "";
-            public List<string> Recipes;
-            public List<string> ShownTutorials;
-            public List<Skill> Skills;
+            public HashSet<string> Recipes;
+            public HashSet<string> ShownTutorials;
+            public HashSet<Skill> Skills;
             public Vector3 SkinColor;
             public float Stamina;
             public string StartSeed = "";
             public Dictionary<string, int> Stations = new Dictionary<string, int>();
             public Dictionary<string, string> Texts = new Dictionary<string, string>();
             public float TimeSinceDeath;
-            public List<string> Trophies;
-            public List<string> Uniques;
+            public HashSet<string> Trophies;
+            public HashSet<string> Uniques;
             public Dictionary<long, World> WorldsData = new Dictionary<long, World>();
-            public int DataVersion;
+            public int DataVersion = 0;
             public int SkillsVersion;
             public int InventoryVersion;
             public int CharacterVersion;
