@@ -11,30 +11,11 @@ namespace ValheimCharacterEditor
         static public bool FirstRun = true;
         static public Character[] FoundCharacters;
         static public Character SelectedCharacter = new Character();
-             
-        static public HashSet<ColorPreset> HairColorPresets = new HashSet<ColorPreset>
-        {
-            new ColorPreset { Name = "Don't change"},     // values are set later
-            new ColorPreset { Name = "Black", Red = 0.106f, Green = 0.1f, Blue = 0.075f },
-            new ColorPreset { Name = "Blonde", Red = 1f, Green = 0.71f, Blue = 0.49f },
-            new ColorPreset { Name = "Ginger", Red = 0.70f, Green = 0.34f, Blue = 0.20f },
-            new ColorPreset { Name = "Brown", Red = 0.525f, Green = 0.374f, Blue = 0.26f },
-            new ColorPreset { Name = "White", Red = 0.81f, Green = 0.75f, Blue = 0.57f },
-        };
 
         public class Character
         {
             public String File;
             public ValheimEngine.Character Data;
-            public ColorPreset ColorPreset;
-        }
-
-        public class ColorPreset
-        {
-            public string Name;
-            public float Red;
-            public float Green;
-            public float Blue;
         }
 
         static public void Initialize(String name)
@@ -45,11 +26,6 @@ namespace ValheimCharacterEditor
                 {
                     SelectedCharacter.Data = character.Data;
                     SelectedCharacter.File = character.File;
-                    // hacky way to avoid changing hair color to one of the presets
-                    HairColorPresets.ElementAt(0).Red = character.Data.HairColor.X;
-                    HairColorPresets.ElementAt(0).Green = character.Data.HairColor.Y;
-                    HairColorPresets.ElementAt(0).Blue = character.Data.HairColor.Z;
-                    SelectedCharacter.ColorPreset = new ColorPreset {Name = "Don't change"};
                     return;
                 }
             }
@@ -58,14 +34,20 @@ namespace ValheimCharacterEditor
             Application.Exit();
         }
 
-        static public ValheimEngine.Vector3 GetHairColor(int index)
+        static public int GenderUItoInternal(String gender)
         {
-            return new ValheimEngine.Vector3
-            {
-                X = HairColorPresets.ElementAt(index).Red,
-                Y = HairColorPresets.ElementAt(index).Green,
-                Z = HairColorPresets.ElementAt(index).Blue,
-            };
+            if (gender.Equals("Male"))
+                return 0;
+            else
+                return 1;
+        }
+
+        static public String GenderInternaltoUI(int gender)
+        {
+            if (gender == 0)
+                return "Male";
+            else
+                return "Female";
         }
 
         static public void GetCharacters()

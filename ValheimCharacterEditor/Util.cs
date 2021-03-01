@@ -80,5 +80,20 @@ namespace ValheimCharacterEditor
 
             return names;
         }
+
+        static public ValheimEngine.Vector3 ColorToVec3(System.Drawing.Color Color)
+        {
+            return new ValheimEngine.Vector3
+            {
+                X = Color.R / 255.0F,
+                Y = Color.G / 255.0F,
+                Z = Color.B / 255.0F
+            };
+        }
+
+        static public System.Drawing.Color Vec3ToColor (ValheimEngine.Vector3 color)
+        {
+            return System.Drawing.Color.FromArgb(255, (int)(color.X*255), (int)(color.Y * 255), (int)(color.Z * 255));
+        }
     }
 }
