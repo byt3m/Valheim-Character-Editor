@@ -9,16 +9,9 @@ namespace ValheimCharacterEditor
         static public String[] BeardsInternal = { "BeardNone", "Beard5", "Beard6", "Beard9", "Beard10", "Beard1", "Beard2", "Beard3", "Beard4", "Beard7", "Beard8" };
         static public String[] HairsUI = { "No hair", "Braided 1", "Braided 2", "Braided 3", "Braided 4", "Long 1", "Ponytail 1", "Ponytail 2", "Ponytail 3", "Ponytail 4", "Short 1", "Short 2", "Side Swept 1", "Side Swept 2", "Side Swept 3" };
         static public String[] HairsInternal = { "HairNone", "Hair3", "Hair11", "Hair12", "Hair13", "Hair6", "Hair1", "Hair2", "Hair4", "Hair7", "Hair5", "Hair8", "Hair9", "Hair10", "Hair14" };
+        static public String[] Genders = { "Male", "Female" };
 
         static public String NameDisallowedCharacters = "0123456789,;.:-_´¨{}][+*`^¡¿'?=)(/&¬%$·#@!|ª\\º\"'";
-
-        public class HairColorPreset
-        {
-            public string Name;
-            public float Red;
-            public float Green;
-            public float Blue;
-        }
 
         public class Vector3
         {
@@ -30,12 +23,11 @@ namespace ValheimCharacterEditor
         public class Character
         {
             public string Beard = "";
-            public List<Biome> Biomes;
+            public HashSet<Biome> Biomes;
             public int Builds;
             public int Crafts;
             public int Deaths;
-            public string FileName = "";
-            public List<Food> Foods;
+            public List<Food> Foods;    // digesting foods
             public string GuardianPower;
             public float GuardianPowerCooldown;
             public string Hair = "";
@@ -45,24 +37,23 @@ namespace ValheimCharacterEditor
             public List<Item> Inventory;
             public bool IsFirstSpawn;
             public int Kills;
-            public List<string> KnownMaterials;
-            public float MaxHp = 0;
-            public int Model;
+            public HashSet<string> KnownMaterials;
+            public float MaxHp;
+            public int Gender;  // 0 - male, 1 - female
             public string Name = "";
-            public string Path = "";
-            public List<string> Recipes;
-            public List<string> ShownTutorials;
-            public List<Skill> Skills;
+            public HashSet<string> Recipes;
+            public HashSet<string> ShownTutorials;
+            public HashSet<Skill> Skills;
             public Vector3 SkinColor;
             public float Stamina;
             public string StartSeed = "";
             public Dictionary<string, int> Stations = new Dictionary<string, int>();
             public Dictionary<string, string> Texts = new Dictionary<string, string>();
             public float TimeSinceDeath;
-            public List<string> Trophies;
-            public List<string> Uniques;
+            public HashSet<string> Trophies;
+            public HashSet<string> Uniques;
             public Dictionary<long, World> WorldsData = new Dictionary<long, World>();
-            public int DataVersion;
+            public int DataVersion = 0;
             public int SkillsVersion;
             public int InventoryVersion;
             public int CharacterVersion;

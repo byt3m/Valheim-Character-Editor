@@ -6,8 +6,6 @@ namespace ValheimCharacterEditor
 {
     public partial class Form1 : Form
     {
-        private string[] _presetNames;
-
         public Form1()
         {
             InitializeComponent();
@@ -46,12 +44,7 @@ namespace ValheimCharacterEditor
             comboBox_Characters.SelectedIndex = -1;
             comboBox_Beard.DataSource = ValheimEngine.BeardsUI;
             comboBox_Hair.DataSource = ValheimEngine.HairsUI;
-            
-            _presetNames = new string[Customization.HairColorPresets.Count];
-            for(int i = 0; i < Customization.HairColorPresets.Count; i++)
-                _presetNames[i] = Customization.HairColorPresets.ElementAt(i).Name;
-
-            comboBox_HairColor.DataSource = _presetNames;
+            comboBox_Gender.DataSource = ValheimEngine.Genders;
         }
 
         private void Form1_move(object sender, MouseEventArgs e)
@@ -84,16 +77,22 @@ namespace ValheimCharacterEditor
                 Customization.Initialize(comboBox_Characters.SelectedItem.ToString());
 
                 // Put appearance in gui
+                textBox_Name.Text = Customization.SelectedCharacter.Data.Name;
                 comboBox_Beard.SelectedIndex = comboBox_Beard.FindStringExact(ValheimEngine.BeardsUI[Util.FindInArrayString(ValheimEngine.BeardsInternal, Customization.SelectedCharacter.Data.Beard)]);
                 comboBox_Hair.SelectedIndex = comboBox_Hair.FindStringExact(ValheimEngine.HairsUI[Util.FindInArrayString(ValheimEngine.HairsInternal, Customization.SelectedCharacter.Data.Hair)]);
-                comboBox_HairColor.SelectedIndex = comboBox_HairColor.FindStringExact(Customization.SelectedCharacter.HairColorPreset.Name);
-                textBox_Name.Text = Customization.SelectedCharacter.Data.Name;
+                comboBox_Gender.SelectedIndex = comboBox_Gender.FindStringExact(Customization.GenderInternaltoUI(Customization.SelectedCharacter.Data.Gender));
+                textBox_HairColor.BackColor = Util.Vec3ToColor(Customization.SelectedCharacter.Data.HairColor);
+                textBox_SkinTone.BackColor = Util.Vec3ToColor(Customization.SelectedCharacter.Data.SkinColor);
 
                 // Enable gui elements
                 textBox_Name.Enabled = true;
                 comboBox_Beard.Enabled = true;
                 comboBox_Hair.Enabled = true;
-                comboBox_HairColor.Enabled = true;
+                comboBox_Gender.Enabled = true;
+                button_SkinTone.Enabled = true;
+                button_HairColor.Enabled = true;
+                textBox_HairColor.Enabled = true;
+                textBox_SkinTone.Enabled = true;
                 button_Apply.Enabled = true;
             }
             catch
@@ -108,7 +107,11 @@ namespace ValheimCharacterEditor
             textBox_Name.Enabled = false;
             comboBox_Beard.Enabled = false;
             comboBox_Hair.Enabled = false;
-            comboBox_HairColor.Enabled = false;
+            comboBox_Gender.Enabled = false;
+            button_SkinTone.Enabled = false;
+            button_HairColor.Enabled = false;
+            textBox_HairColor.Enabled = false;
+            textBox_SkinTone.Enabled = false;
             button_Apply.Enabled = false;
 
             // Make a first run again to avoid fully executing "comboBox_Characters_SelectedIndexChanged"
@@ -125,7 +128,7 @@ namespace ValheimCharacterEditor
         {
             // Check GUI elements content
             if (String.IsNullOrEmpty(comboBox_Beard.SelectedItem.ToString()) || String.IsNullOrEmpty(textBox_Name.Text) ||
-                String.IsNullOrEmpty(comboBox_Hair.SelectedItem.ToString())  || String.IsNullOrEmpty(comboBox_HairColor.SelectedItem.ToString()))
+                String.IsNullOrEmpty(comboBox_Hair.SelectedItem.ToString())  || String.IsNullOrEmpty(comboBox_Gender.SelectedItem.ToString()))
             {
                 MessageBox.Show("Please fill in every field under Character customization.", "ERROR", MessageBoxButtons.OK);
                 return;
@@ -144,8 +147,8 @@ namespace ValheimCharacterEditor
                 DialogResult continue_with_write = MessageBox.Show("The following customization will be applied:\n\t- Name: " +
                                                             textBox_Name.Text + "\n\t- Beard: " +
                                                             comboBox_Beard.SelectedItem.ToString() + ".\n\t- Hair: " +
-                                                            comboBox_Hair.SelectedItem.ToString() + ".\n\t- Hair color: " +
-                                                            comboBox_HairColor.SelectedItem.ToString() + ".\n\n Do you want to continue?",
+                                                            comboBox_Hair.SelectedItem.ToString() + ".\n\t- Gender: " +
+                                                            comboBox_Gender.SelectedItem.ToString() + ".\n\n Do you want to continue?",
                                                             "WARNING", MessageBoxButtons.YesNo);
                 if (continue_with_write == DialogResult.No)
                     return;
@@ -161,7 +164,9 @@ namespace ValheimCharacterEditor
                 Customization.SelectedCharacter.Data.Name = textBox_Name.Text;
                 Customization.SelectedCharacter.Data.Hair = ValheimEngine.HairsInternal[Array.IndexOf(ValheimEngine.HairsUI, comboBox_Hair.SelectedItem)];
                 Customization.SelectedCharacter.Data.Beard = ValheimEngine.BeardsInternal[Array.IndexOf(ValheimEngine.BeardsUI, comboBox_Beard.SelectedItem)];
-                Customization.SelectedCharacter.Data.HairColor = Customization.GetHairColor(Array.IndexOf(_presetNames, comboBox_HairColor.Text));
+                Customization.SelectedCharacter.Data.Gender = Customization.GenderUItoInternal(comboBox_Gender.SelectedItem.ToString());
+                Customization.SelectedCharacter.Data.HairColor = Util.ColorToVec3(textBox_HairColor.BackColor);
+                Customization.SelectedCharacter.Data.SkinColor = Util.ColorToVec3(textBox_SkinTone.BackColor);
 
                 // Write customization, if fail restore backup
                 if (Customization.WriteCustomization())
@@ -200,6 +205,20 @@ namespace ValheimCharacterEditor
 
             textBox_Name.Text = new_text;
             textBox_Name.Select(textBox_Name.Text.Length, 0);
+        }
+
+        private void button_SkinTone_Click(object sender, EventArgs e)
+        {
+            colorDialog_SkinTone.Color = textBox_SkinTone.BackColor;
+            if (colorDialog_SkinTone.ShowDialog() == DialogResult.OK)
+                textBox_SkinTone.BackColor = colorDialog_SkinTone.Color;
+        }
+
+        private void button_HairColor_Click(object sender, EventArgs e)
+        {
+            colorDialog_HairColor.Color = textBox_HairColor.BackColor;
+            if (colorDialog_HairColor.ShowDialog() == DialogResult.OK)
+                textBox_HairColor.BackColor = colorDialog_HairColor.Color;
         }
     }
 }
