@@ -10,6 +10,8 @@ Tested on Valheim 0.146.11 and Windows 10 x64 20H2. Not tested online.
 
 Always use at your own risk. I am not responsible for the lost of any information from your character or any other harm to your copy of Valheim.
 
+Related to the skin colors, please note that the default in-game skin tone is limited to a gray scale from 0% to ~70% black. Take this in mind when applying a new color so you can get the desired tone.
+
 # Usage
   1. If Valheim is running, close it.
   2. Open ValheimCharacterEditor.
