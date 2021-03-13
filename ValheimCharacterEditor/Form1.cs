@@ -16,8 +16,8 @@ namespace ValheimCharacterEditor
             // Check game is not running
             if (Util.isGameRunning())
             {
-                MessageBox.Show("Please close Valheim before editing your character.", "ERROR", MessageBoxButtons.OK);
-                Application.Exit();
+                MessageBox.Show("Warning Valheim is runing", "ERROR", MessageBoxButtons.OK);
+               // Application.Exit();
             }
 
             // Populate forms with data
