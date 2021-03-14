@@ -286,7 +286,7 @@ namespace ValheimCharacterEditor
             this.label_Version.Name = "label_Version";
             this.label_Version.Size = new System.Drawing.Size(156, 13);
             this.label_Version.TabIndex = 7;
-            this.label_Version.Text = "Valheim Character Editor v1.5";
+            this.label_Version.Text = "Valheim Character Editor v1.6";
             // 
             // button_Minimize
             // 
