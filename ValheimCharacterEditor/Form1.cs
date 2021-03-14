@@ -94,6 +94,7 @@ namespace ValheimCharacterEditor
                 textBox_HairColor.Enabled = true;
                 textBox_SkinTone.Enabled = true;
                 button_Apply.Enabled = true;
+                button_Skills.Enabled = true;
             }
             catch
             {
@@ -113,6 +114,7 @@ namespace ValheimCharacterEditor
             textBox_HairColor.Enabled = false;
             textBox_SkinTone.Enabled = false;
             button_Apply.Enabled = false;
+            button_Skills.Enabled = false;
 
             // Make a first run again to avoid fully executing "comboBox_Characters_SelectedIndexChanged"
             Customization.FirstRun = true;
@@ -219,6 +221,15 @@ namespace ValheimCharacterEditor
             colorDialog_HairColor.Color = textBox_HairColor.BackColor;
             if (colorDialog_HairColor.ShowDialog() == DialogResult.OK)
                 textBox_HairColor.BackColor = colorDialog_HairColor.Color;
+        }
+          
+
+        private void button_Skills_Click(object sender, EventArgs e)
+        {
+            Form_Skills skills_form = new Form_Skills();
+            skills_form.ShowDialog();
+            
+
         }
     }
 }

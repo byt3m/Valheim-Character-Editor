@@ -10,6 +10,7 @@ namespace ValheimCharacterEditor
         static public String[] HairsUI = { "No hair", "Braided 1", "Braided 2", "Braided 3", "Braided 4", "Long 1", "Ponytail 1", "Ponytail 2", "Ponytail 3", "Ponytail 4", "Short 1", "Short 2", "Side Swept 1", "Side Swept 2", "Side Swept 3" };
         static public String[] HairsInternal = { "HairNone", "Hair3", "Hair11", "Hair12", "Hair13", "Hair6", "Hair1", "Hair2", "Hair4", "Hair7", "Hair5", "Hair8", "Hair9", "Hair10", "Hair14" };
         static public String[] Genders = { "Male", "Female" };
+        static public String[] SkillsUI = { "Swords","Knives","Clubs","Polearms","Spears","Blocking","Axes","Bows","FireMagic","FrostMagic","Unarmed","Pickaxes","WoodCutting","Jump","Sneak","Run","Swim"};
 
         static public String NameDisallowedCharacters = "0123456789,;.:-_´¨{}][+*`^¡¿'?=)(/&¬%$·#@!|ª\\º\"'";
 
@@ -43,7 +44,7 @@ namespace ValheimCharacterEditor
             public string Name = "";
             public HashSet<string> Recipes;
             public HashSet<string> ShownTutorials;
-            public HashSet<Skill> Skills;
+            public List<Skill> Skills;
             public Vector3 SkinColor;
             public float Stamina;
             public string StartSeed = "";

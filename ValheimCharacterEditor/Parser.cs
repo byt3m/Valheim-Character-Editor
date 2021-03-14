@@ -167,7 +167,7 @@ namespace ValheimCharacterEditor
 
             character.SkillsVersion = byteAccess.ReadInt32();
             var numberOfSkills = byteAccess.ReadInt32();
-            character.Skills = new HashSet<ValheimEngine.Character.Skill>();
+            character.Skills = new List<ValheimEngine.Character.Skill>();
             for (var i = 0; i < numberOfSkills; i++)
             {
                 var skill = new ValheimEngine.Character.Skill
