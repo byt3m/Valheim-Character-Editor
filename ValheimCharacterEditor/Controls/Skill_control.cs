@@ -33,6 +33,12 @@ namespace ValheimCharacterEditor.Controls
             }
             set
             {
+
+                if (value == 0)
+                {
+                    value = 1;
+
+                }
                 trackBar_skill.Value = value;
                 label_skill_level.Text = value.ToString();
                 ValheimEngine.Character.SkillName SN = (ValheimEngine.Character.SkillName)Enum.Parse(typeof(ValheimEngine.Character.SkillName), skill_name);
