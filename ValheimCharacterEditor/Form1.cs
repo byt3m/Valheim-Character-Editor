@@ -45,6 +45,23 @@ namespace ValheimCharacterEditor
             comboBox_Beard.DataSource = ValheimEngine.BeardsUI;
             comboBox_Hair.DataSource = ValheimEngine.HairsUI;
             comboBox_Gender.DataSource = ValheimEngine.Genders;
+
+            dataGrid_Inventory.BackgroundColor = System.Drawing.Color.DimGray;
+            dataGrid_Inventory.ColumnCount = 2;
+            dataGrid_Inventory.Columns[0].Name = "Item Name";
+            dataGrid_Inventory.Columns[1].Name = "Count";
+            dataGrid_Inventory.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.DimGray;
+            dataGrid_Inventory.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+            dataGrid_Inventory.ColumnHeadersDefaultCellStyle.Font =
+                new System.Drawing.Font(label_Version.Font, System.Drawing.FontStyle.Bold);
+            dataGrid_Inventory.RowsDefaultCellStyle.BackColor = System.Drawing.Color.DimGray;
+            dataGrid_Inventory.RowsDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+
+            dataGrid_Inventory.Rows.Clear();
+            dataGrid_Inventory.RowHeadersVisible = false;
+            dataGrid_Inventory.SelectionMode =
+                DataGridViewSelectionMode.FullRowSelect;
+
         }
 
         private void Form1_move(object sender, MouseEventArgs e)
@@ -69,7 +86,7 @@ namespace ValheimCharacterEditor
             if (Customization.FirstRun || String.IsNullOrEmpty(comboBox_Characters.SelectedItem.ToString()))
             {
                 return;
-            }        
+            }
 
             try
             {
@@ -83,6 +100,8 @@ namespace ValheimCharacterEditor
                 comboBox_Gender.SelectedIndex = comboBox_Gender.FindStringExact(Customization.GenderInternaltoUI(Customization.SelectedCharacter.Data.Gender));
                 textBox_HairColor.BackColor = Util.Vec3ToColor(Customization.SelectedCharacter.Data.HairColor);
                 textBox_SkinTone.BackColor = Util.Vec3ToColor(Customization.SelectedCharacter.Data.SkinColor);
+                Util.LoadInventory(ref Customization.SelectedCharacter.Data.Inventory, ref dataGrid_Inventory);
+
 
                 // Enable gui elements
                 textBox_Name.Enabled = true;
@@ -93,7 +112,9 @@ namespace ValheimCharacterEditor
                 button_HairColor.Enabled = true;
                 textBox_HairColor.Enabled = true;
                 textBox_SkinTone.Enabled = true;
+                dataGrid_Inventory.Enabled = true;
                 button_Apply.Enabled = true;
+
             }
             catch
             {
@@ -113,6 +134,7 @@ namespace ValheimCharacterEditor
             textBox_HairColor.Enabled = false;
             textBox_SkinTone.Enabled = false;
             button_Apply.Enabled = false;
+            dataGrid_Inventory.Enabled = false;
 
             // Make a first run again to avoid fully executing "comboBox_Characters_SelectedIndexChanged"
             Customization.FirstRun = true;
@@ -128,7 +150,7 @@ namespace ValheimCharacterEditor
         {
             // Check GUI elements content
             if (String.IsNullOrEmpty(comboBox_Beard.SelectedItem.ToString()) || String.IsNullOrEmpty(textBox_Name.Text) ||
-                String.IsNullOrEmpty(comboBox_Hair.SelectedItem.ToString())  || String.IsNullOrEmpty(comboBox_Gender.SelectedItem.ToString()))
+                String.IsNullOrEmpty(comboBox_Hair.SelectedItem.ToString()) || String.IsNullOrEmpty(comboBox_Gender.SelectedItem.ToString()))
             {
                 MessageBox.Show("Please fill in every field under Character customization.", "ERROR", MessageBoxButtons.OK);
                 return;
@@ -143,13 +165,19 @@ namespace ValheimCharacterEditor
 
             try
             {
+                System.Text.StringBuilder sb = new System.Text.StringBuilder(256);
+
+                Util.BuildInventoryPrintList(ref Customization.InventoryScratchPad, ref sb);
                 // Ask to continue and write customization
                 DialogResult continue_with_write = MessageBox.Show("The following customization will be applied:\n\t- Name: " +
-                                                            textBox_Name.Text + "\n\t- Beard: " +
-                                                            comboBox_Beard.SelectedItem.ToString() + ".\n\t- Hair: " +
-                                                            comboBox_Hair.SelectedItem.ToString() + ".\n\t- Gender: " +
-                                                            comboBox_Gender.SelectedItem.ToString() + ".\n\n Do you want to continue?",
-                                                            "WARNING", MessageBoxButtons.YesNo);
+                                                            textBox_Name.Text +
+                                                            "\n\t- Beard: " + comboBox_Beard.SelectedItem.ToString() +
+                                                            ".\n\t- Hair: " + comboBox_Hair.SelectedItem.ToString() +
+                                                            ".\n\t- Gender: " + comboBox_Gender.SelectedItem.ToString() +
+                                                            ".\n\t- Inventory:\n" +
+                                                            sb.ToString() +
+                                                            "\n\n Do you want to continue?",
+                                                            "WARNING", MessageBoxButtons.YesNo); ;
                 if (continue_with_write == DialogResult.No)
                     return;
 
@@ -167,6 +195,8 @@ namespace ValheimCharacterEditor
                 Customization.SelectedCharacter.Data.Gender = Customization.GenderUItoInternal(comboBox_Gender.SelectedItem.ToString());
                 Customization.SelectedCharacter.Data.HairColor = Util.ColorToVec3(textBox_HairColor.BackColor);
                 Customization.SelectedCharacter.Data.SkinColor = Util.ColorToVec3(textBox_SkinTone.BackColor);
+
+                // dataGrid_Inventory
 
                 // Write customization, if fail restore backup
                 if (Customization.WriteCustomization())
@@ -219,6 +249,21 @@ namespace ValheimCharacterEditor
             colorDialog_HairColor.Color = textBox_HairColor.BackColor;
             if (colorDialog_HairColor.ShowDialog() == DialogResult.OK)
                 textBox_HairColor.BackColor = colorDialog_HairColor.Color;
+        }
+
+        private void dataGrid_Inventory_CellValueChanged(object send, DataGridViewCellEventArgs e)
+        {
+            int newValue;
+            if (int.TryParse(dataGrid_Inventory.Rows[e.RowIndex].Cells[1].Value.ToString(), out newValue))
+            {
+                newValue = Math.Max(1, Math.Min(newValue, 100));
+                Customization.InventoryScratchPad[e.RowIndex].Stack = newValue;
+                dataGrid_Inventory.Rows[e.RowIndex].Cells[1].Value = newValue;
+            }
+            else
+            {
+                dataGrid_Inventory.Rows[e.RowIndex].Cells[1].Value = 1;
+            }
         }
     }
 }

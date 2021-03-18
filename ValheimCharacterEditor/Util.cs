@@ -3,6 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Threading;
+using System.Collections.Generic;
+using static ValheimCharacterEditor.ValheimEngine.Character;
+using System.Text;
 
 namespace ValheimCharacterEditor
 {
@@ -30,7 +33,7 @@ namespace ValheimCharacterEditor
 
                 return true;
             }
-            
+
             return false;
         }
 
@@ -51,9 +54,9 @@ namespace ValheimCharacterEditor
                 {
                     return fbd.SelectedPath;
                 }
-                
+
                 return null;
-            }            
+            }
         }
 
         static public int FindInArrayString(String[] array, String toSearch)
@@ -91,9 +94,36 @@ namespace ValheimCharacterEditor
             };
         }
 
-        static public System.Drawing.Color Vec3ToColor (ValheimEngine.Vector3 color)
+        static public System.Drawing.Color Vec3ToColor(ValheimEngine.Vector3 color)
         {
-            return System.Drawing.Color.FromArgb(255, (int)(color.X*255), (int)(color.Y * 255), (int)(color.Z * 255));
+            return System.Drawing.Color.FromArgb(255, (int)(color.X * 255), (int)(color.Y * 255), (int)(color.Z * 255));
+        }
+
+        static public void LoadInventory(ref List<Item> inventory, ref DataGridView dataView)
+        {
+            dataView.Rows.Clear();
+            Customization.InventoryScratchPad.Clear();
+
+            Customization.InventoryScratchPad.AddRange(inventory);
+            foreach (var item in inventory)
+            {
+                dataView.Rows.Add(
+                    new string[] { item.Name, item.Stack.ToString() }
+                );
+            }
+        }
+
+        static public void BuildInventoryPrintList(ref List<Item> inventory, ref StringBuilder sb)
+        {
+            sb.Clear();
+            foreach( var item in inventory )
+            {
+                sb.Append("\t\t ");
+                sb.Append(item.Stack);
+                sb.Append(" ");
+                sb.Append(item.Name);
+                sb.Append("\n");
+            }
         }
     }
 }

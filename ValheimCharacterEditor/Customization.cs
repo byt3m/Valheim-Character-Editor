@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
+using static ValheimCharacterEditor.ValheimEngine.Character;
 
 namespace ValheimCharacterEditor
 {
@@ -11,6 +12,8 @@ namespace ValheimCharacterEditor
         static public bool FirstRun = true;
         static public Character[] FoundCharacters;
         static public Character SelectedCharacter = new Character();
+
+        static public List<Item> InventoryScratchPad = new List<Item>();
 
         public class Character
         {
