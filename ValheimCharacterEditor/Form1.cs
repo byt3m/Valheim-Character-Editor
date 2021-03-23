@@ -93,6 +93,7 @@ namespace ValheimCharacterEditor
                 button_HairColor.Enabled = true;
                 textBox_HairColor.Enabled = true;
                 textBox_SkinTone.Enabled = true;
+                button_Inventory.Enabled = true;
                 button_Apply.Enabled = true;
             }
             catch
@@ -219,6 +220,18 @@ namespace ValheimCharacterEditor
             colorDialog_HairColor.Color = textBox_HairColor.BackColor;
             if (colorDialog_HairColor.ShowDialog() == DialogResult.OK)
                 textBox_HairColor.BackColor = colorDialog_HairColor.Color;
+        }
+
+        private void button_Inventory_Click(object sender, EventArgs e)
+        {
+            FormInventory inventory = new FormInventory();
+            switch (inventory.ShowDialog(this))
+            {
+                case DialogResult.OK:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
