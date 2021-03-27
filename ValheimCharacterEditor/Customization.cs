@@ -84,7 +84,31 @@ namespace ValheimCharacterEditor
             }
             GC.Collect();   // is it really that bad?
         }
-        static public bool WriteCustomization ()
+
+        static private String RemoveInvalidFileNameChars (String file_name)
+        {
+            char[] invalidFileChars = Path.GetInvalidFileNameChars();
+            String result = "";
+            bool addChar = true;
+
+            foreach (char chr in file_name)
+            {
+                foreach (char invalidchr in invalidFileChars)
+                {
+                    if (chr == invalidchr)
+                        addChar = false;
+                }
+
+                if (addChar)
+                    result += chr;
+                else
+                    addChar = true;
+            }
+
+            return result;
+        }
+
+        static public bool WriteCustomization()
         {
             // Check again if game is running to avoid problems
             if (Util.isGameRunning())
@@ -93,11 +117,11 @@ namespace ValheimCharacterEditor
                 Application.Exit();
             }
 
-            // Currently writting to the same .FCH file. I changed this because windows has limitations for file names and people will 
-            // start using forbidden characters which will result in a crash when writting file. Also, the characters combobox now shows the character
-            // names instead of file names, so there is not really a need to change the filename as the user will always see his in-game name in the GUI.
-            // No need to check WriteAllBytes as it does not return any value. If fails it will go to the Form1 Try-Catch block
-            // No need to check backup because it is already checked when it is done in Util.
+            // Build new file name in case name changed
+            String newFileName = RemoveInvalidFileNameChars(SelectedCharacter.Data.Name) + ".fch";
+            SelectedCharacter.File = Path.Combine(Path.GetDirectoryName(SelectedCharacter.File), newFileName);
+
+            // Write new file
             File.WriteAllBytes(SelectedCharacter.File, Parser.CharacterWriteData(SelectedCharacter.Data));
 
             return true;
