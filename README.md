@@ -20,7 +20,7 @@ Related to the skin colors, please note that the default in-game skin tone is li
   5. Enjoy.
  
 # Known problems
-  - Steam sync seems to be causing problems when you change your character name. Disabling it is recommended.
+  - Steam sync seems to be causing problems like character duplicates or restoring your character file. Disabling it is recommended.
 
 # Whats coming next
   - Inventory editor.
