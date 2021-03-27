@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Linq;
+using System.Collections.Generic;
+using static ValheimCharacterEditor.ValheimEngine.Character;
 
 namespace ValheimCharacterEditor
 {
@@ -14,11 +16,11 @@ namespace ValheimCharacterEditor
         private void Form1_Load(object sender, EventArgs e)
         {
             // Check game is not running
-            if (Util.isGameRunning())
-            {
-                MessageBox.Show("Please close Valheim before editing your character.", "ERROR", MessageBoxButtons.OK);
-                Application.Exit();
-            }
+            //if (Util.isGameRunning())
+            //{
+            //    MessageBox.Show("Please close Valheim before editing your character.", "ERROR", MessageBoxButtons.OK);
+            //    Application.Exit();
+            //}
 
             // Populate forms with data
             _Populate();
@@ -47,20 +49,32 @@ namespace ValheimCharacterEditor
             comboBox_Gender.DataSource = ValheimEngine.Genders;
 
             dataGrid_Inventory.BackgroundColor = System.Drawing.Color.DimGray;
-            dataGrid_Inventory.ColumnCount = 2;
+            dataGrid_Inventory.ColumnCount = 3;
             dataGrid_Inventory.Columns[0].Name = "Item Name";
             dataGrid_Inventory.Columns[1].Name = "Count";
+            dataGrid_Inventory.Columns[2].Name = "Id";
             dataGrid_Inventory.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.DimGray;
             dataGrid_Inventory.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
-            dataGrid_Inventory.ColumnHeadersDefaultCellStyle.Font =
-                new System.Drawing.Font(label_Version.Font, System.Drawing.FontStyle.Bold);
+            dataGrid_Inventory.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font(label_Version.Font, System.Drawing.FontStyle.Bold);
             dataGrid_Inventory.RowsDefaultCellStyle.BackColor = System.Drawing.Color.DimGray;
             dataGrid_Inventory.RowsDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
-
             dataGrid_Inventory.Rows.Clear();
             dataGrid_Inventory.RowHeadersVisible = false;
             dataGrid_Inventory.SelectionMode =
                 DataGridViewSelectionMode.FullRowSelect;
+
+            dataGrid_Skills.BackgroundColor = System.Drawing.Color.DimGray;
+            dataGrid_Skills.ColumnCount = 2;
+            dataGrid_Skills.Columns[0].Name = "Skill Name";
+            dataGrid_Skills.Columns[1].Name = "Level";
+            dataGrid_Skills.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.DimGray;
+            dataGrid_Skills.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+            dataGrid_Skills.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font(label_Version.Font, System.Drawing.FontStyle.Bold);
+            dataGrid_Skills.RowsDefaultCellStyle.BackColor = System.Drawing.Color.DimGray;
+            dataGrid_Skills.RowsDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+            dataGrid_Skills.Rows.Clear();
+            dataGrid_Skills.RowHeadersVisible = false;
+            dataGrid_Skills.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
         }
 
@@ -101,6 +115,7 @@ namespace ValheimCharacterEditor
                 textBox_HairColor.BackColor = Util.Vec3ToColor(Customization.SelectedCharacter.Data.HairColor);
                 textBox_SkinTone.BackColor = Util.Vec3ToColor(Customization.SelectedCharacter.Data.SkinColor);
                 Util.LoadInventory(ref Customization.SelectedCharacter.Data.Inventory, ref dataGrid_Inventory);
+                Util.LoadSkills(ref Customization.SelectedCharacter.Data.Skills, ref dataGrid_Skills);
 
 
                 // Enable gui elements
@@ -113,6 +128,7 @@ namespace ValheimCharacterEditor
                 textBox_HairColor.Enabled = true;
                 textBox_SkinTone.Enabled = true;
                 dataGrid_Inventory.Enabled = true;
+                dataGrid_Skills.Enabled = true;
                 button_Apply.Enabled = true;
 
             }
@@ -135,6 +151,7 @@ namespace ValheimCharacterEditor
             textBox_SkinTone.Enabled = false;
             button_Apply.Enabled = false;
             dataGrid_Inventory.Enabled = false;
+            dataGrid_Skills.Enabled = false;
 
             // Make a first run again to avoid fully executing "comboBox_Characters_SelectedIndexChanged"
             Customization.FirstRun = true;
@@ -165,17 +182,21 @@ namespace ValheimCharacterEditor
 
             try
             {
-                System.Text.StringBuilder sb = new System.Text.StringBuilder(256);
+                System.Text.StringBuilder inventoryStringBuilder = new System.Text.StringBuilder(256);
+                System.Text.StringBuilder skillStringBuilder = new System.Text.StringBuilder(256);
 
-                Util.BuildInventoryPrintList(ref Customization.InventoryScratchPad, ref sb);
+
+                Util.BuildInventoryPrintList(ref Customization.InventoryScratchPad, ref inventoryStringBuilder);
+                Util.BuildSkillPrintList(ref Customization.SkillScratchPad, ref skillStringBuilder);
                 // Ask to continue and write customization
                 DialogResult continue_with_write = MessageBox.Show("The following customization will be applied:\n\t- Name: " +
                                                             textBox_Name.Text +
                                                             "\n\t- Beard: " + comboBox_Beard.SelectedItem.ToString() +
                                                             ".\n\t- Hair: " + comboBox_Hair.SelectedItem.ToString() +
                                                             ".\n\t- Gender: " + comboBox_Gender.SelectedItem.ToString() +
-                                                            ".\n\t- Inventory:\n" +
-                                                            sb.ToString() +
+                                                            ".\n\t- Inventory:\n" + inventoryStringBuilder.ToString() +
+                                                            ".\n\t- Skills:\n" + skillStringBuilder.ToString() +
+
                                                             "\n\n Do you want to continue?",
                                                             "WARNING", MessageBoxButtons.YesNo); ;
                 if (continue_with_write == DialogResult.No)
@@ -262,7 +283,43 @@ namespace ValheimCharacterEditor
             }
             else
             {
-                dataGrid_Inventory.Rows[e.RowIndex].Cells[1].Value = 1;
+                dataGrid_Inventory.Rows[e.RowIndex].Cells[1].Value = "1";
+            }
+
+            Customization.InventoryScratchPad[e.RowIndex].Name = dataGrid_Inventory.Rows[e.RowIndex].Cells[0].Value.ToString();
+        }
+
+        private void dataGrid_Skills_CellValueChanged(object send, DataGridViewCellEventArgs e)
+        {
+            float newValue;
+            string skillName = dataGrid_Skills.Rows[e.RowIndex].Cells[0].Value.ToString();
+            if (float.TryParse(dataGrid_Skills.Rows[e.RowIndex].Cells[1].Value.ToString(), out newValue))
+            {
+                Skill[] skillArray = Customization.SkillScratchPad.ToArray();
+
+                newValue = Math.Max(0.0f, Math.Min(newValue, 100.0f));
+                //IEqualityComparer<HashSet<Skill>> comparer = HashSet<Skill>.CreateSetComparer();
+
+                //foreach( var skill in Customization.SkillScratchPad)
+                //{
+                //    if( comparer.Equals() )
+                //}
+
+                Customization.SkillScratchPad.Clear();
+                foreach (var skill in skillArray)
+                {
+                    if (skill.SkillName.ToString() == skillName)
+                    {
+                        skill.Level = newValue;
+                    }
+                    Customization.SkillScratchPad.Add(skill);
+                }
+
+                dataGrid_Skills.Rows[e.RowIndex].Cells[1].Value = newValue;
+            }
+            else
+            {
+                dataGrid_Skills.Rows[e.RowIndex].Cells[1].Value = "x.xx";
             }
         }
     }

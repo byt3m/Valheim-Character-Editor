@@ -113,15 +113,42 @@ namespace ValheimCharacterEditor
             }
         }
 
+        static public void LoadSkills(ref HashSet<Skill> skillSet, ref DataGridView dataView)
+        {
+            dataView.Rows.Clear();
+            Customization.SkillScratchPad.Clear();
+
+            foreach (var skill in skillSet)
+            {
+                Customization.SkillScratchPad.Add(skill);
+                dataView.Rows.Add(
+                    new string[] { skill.SkillName.ToString(), skill.Level.ToString() }
+                );
+            }
+        }
+
         static public void BuildInventoryPrintList(ref List<Item> inventory, ref StringBuilder sb)
         {
             sb.Clear();
-            foreach( var item in inventory )
+            foreach (var item in inventory)
             {
                 sb.Append("\t\t ");
                 sb.Append(item.Stack);
                 sb.Append(" ");
                 sb.Append(item.Name);
+                sb.Append("\n");
+            }
+        }
+
+        static public void BuildSkillPrintList(ref HashSet<Skill> skillSet, ref StringBuilder sb)
+        {
+            sb.Clear();
+            foreach (var skill in skillSet)
+            {
+                sb.Append("\t\t ");
+                sb.Append(skill.SkillName.ToString());
+                sb.Append(" ");
+                sb.Append(skill.Level);
                 sb.Append("\n");
             }
         }

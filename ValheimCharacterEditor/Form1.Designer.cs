@@ -57,10 +57,12 @@ namespace ValheimCharacterEditor
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.colorDialog_HairColor = new System.Windows.Forms.ColorDialog();
             this.dataGrid_Inventory = new System.Windows.Forms.DataGridView();
+            this.dataGrid_Skills = new System.Windows.Forms.DataGridView();
             this.groupBox_Customization.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid_Inventory)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid_Skills)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox_Customization
@@ -246,7 +248,7 @@ namespace ValheimCharacterEditor
             this.button_Apply.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_Apply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_Apply.ForeColor = System.Drawing.Color.White;
-            this.button_Apply.Location = new System.Drawing.Point(255, 306);
+            this.button_Apply.Location = new System.Drawing.Point(505, 318);
             this.button_Apply.Name = "button_Apply";
             this.button_Apply.Size = new System.Drawing.Size(80, 28);
             this.button_Apply.TabIndex = 4;
@@ -272,7 +274,7 @@ namespace ValheimCharacterEditor
             this.button_Exit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_Exit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_Exit.ForeColor = System.Drawing.Color.White;
-            this.button_Exit.Location = new System.Drawing.Point(833, -5);
+            this.button_Exit.Location = new System.Drawing.Point(1082, -5);
             this.button_Exit.Name = "button_Exit";
             this.button_Exit.Size = new System.Drawing.Size(19, 23);
             this.button_Exit.TabIndex = 6;
@@ -296,7 +298,7 @@ namespace ValheimCharacterEditor
             this.button_Minimize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_Minimize.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button_Minimize.ForeColor = System.Drawing.Color.White;
-            this.button_Minimize.Location = new System.Drawing.Point(817, -5);
+            this.button_Minimize.Location = new System.Drawing.Point(1067, -5);
             this.button_Minimize.Name = "button_Minimize";
             this.button_Minimize.Size = new System.Drawing.Size(19, 23);
             this.button_Minimize.TabIndex = 8;
@@ -347,20 +349,33 @@ namespace ValheimCharacterEditor
             // 
             this.dataGrid_Inventory.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGrid_Inventory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGrid_Inventory.Location = new System.Drawing.Point(582, 26);
+            this.dataGrid_Inventory.Location = new System.Drawing.Point(624, 24);
             this.dataGrid_Inventory.Name = "dataGrid_Inventory";
             this.dataGrid_Inventory.RowHeadersWidth = 51;
             this.dataGrid_Inventory.RowTemplate.Height = 24;
-            this.dataGrid_Inventory.Size = new System.Drawing.Size(270, 274);
+            this.dataGrid_Inventory.Size = new System.Drawing.Size(225, 276);
             this.dataGrid_Inventory.TabIndex = 11;
             this.dataGrid_Inventory.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_Inventory_CellValueChanged);
+            // 
+            // dataGrid_Skills
+            // 
+            this.dataGrid_Skills.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGrid_Skills.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGrid_Skills.Location = new System.Drawing.Point(855, 24);
+            this.dataGrid_Skills.Name = "dataGrid_Skills";
+            this.dataGrid_Skills.RowHeadersWidth = 51;
+            this.dataGrid_Skills.RowTemplate.Height = 24;
+            this.dataGrid_Skills.Size = new System.Drawing.Size(231, 276);
+            this.dataGrid_Skills.TabIndex = 12;
+            this.dataGrid_Skills.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_Skills_CellValueChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(864, 418);
+            this.ClientSize = new System.Drawing.Size(1098, 360);
+            this.Controls.Add(this.dataGrid_Skills);
             this.Controls.Add(this.dataGrid_Inventory);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button_Minimize);
@@ -383,6 +398,7 @@ namespace ValheimCharacterEditor
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid_Inventory)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid_Skills)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -416,6 +432,7 @@ namespace ValheimCharacterEditor
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ColorDialog colorDialog_HairColor;
         private System.Windows.Forms.DataGridView dataGrid_Inventory;
+        private System.Windows.Forms.DataGridView dataGrid_Skills;
     }
 }
 

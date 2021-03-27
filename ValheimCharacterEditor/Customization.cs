@@ -14,6 +14,8 @@ namespace ValheimCharacterEditor
         static public Character SelectedCharacter = new Character();
 
         static public List<Item> InventoryScratchPad = new List<Item>();
+        static public HashSet<Skill> SkillScratchPad = new HashSet<Skill>();
+
 
         public class Character
         {
@@ -90,11 +92,11 @@ namespace ValheimCharacterEditor
         static public bool WriteCustomization ()
         {
             // Check again if game is running to avoid problems
-            if (Util.isGameRunning())
-            {
-                MessageBox.Show("Please close Valheim before editing your character.", "ERROR", MessageBoxButtons.OK);
-                Application.Exit();
-            }
+            //if (Util.isGameRunning())
+            //{
+            //    MessageBox.Show("Please close Valheim before editing your character.", "ERROR", MessageBoxButtons.OK);
+            //    Application.Exit();
+            //}
 
             // Currently writting to the same .FCH file. I changed this because windows has limitations for file names and people will 
             // start using forbidden characters which will result in a crash when writting file. Also, the characters combobox now shows the character
