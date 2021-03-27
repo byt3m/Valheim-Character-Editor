@@ -42,12 +42,12 @@
             // label_Character
             // 
             this.label_Character.AutoSize = true;
-            this.label_Character.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label_Character.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_Character.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label_Character.Location = new System.Drawing.Point(2, 9);
+            this.label_Character.Location = new System.Drawing.Point(9, 9);
             this.label_Character.Name = "label_Character";
             this.label_Character.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.label_Character.Size = new System.Drawing.Size(98, 25);
+            this.label_Character.Size = new System.Drawing.Size(77, 21);
             this.label_Character.TabIndex = 0;
             this.label_Character.Text = "Character";
             // 
@@ -105,8 +105,9 @@
             this.groupBox_fast_set.Controls.Add(this.button_set_100);
             this.groupBox_fast_set.Controls.Add(this.button_set_50);
             this.groupBox_fast_set.Controls.Add(this.button_set_1);
+            this.groupBox_fast_set.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox_fast_set.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.groupBox_fast_set.Location = new System.Drawing.Point(7, 746);
+            this.groupBox_fast_set.Location = new System.Drawing.Point(334, 746);
             this.groupBox_fast_set.Name = "groupBox_fast_set";
             this.groupBox_fast_set.Size = new System.Drawing.Size(327, 53);
             this.groupBox_fast_set.TabIndex = 8;
@@ -148,10 +149,12 @@
             this.Controls.Add(this.button_apply);
             this.Controls.Add(this.label_Character);
             this.Controls.Add(this.groupBox_fast_set);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Form_Skills";
             this.Text = "Skills";
             this.Load += new System.EventHandler(this.Skills_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormSkills_Move);
             this.groupBox_fast_set.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -39,7 +39,7 @@
             // 
             this.groupBox1.Controls.Add(this.trackBar_skill);
             this.groupBox1.Controls.Add(this.label_skill_level);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
@@ -64,7 +64,7 @@
             this.label_skill_level.AutoSize = true;
             this.label_skill_level.Location = new System.Drawing.Point(449, 29);
             this.label_skill_level.Name = "label_skill_level";
-            this.label_skill_level.Size = new System.Drawing.Size(35, 18);
+            this.label_skill_level.Size = new System.Drawing.Size(29, 17);
             this.label_skill_level.TabIndex = 0;
             this.label_skill_level.Text = "100";
             // 

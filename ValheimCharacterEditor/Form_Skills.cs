@@ -20,27 +20,14 @@ namespace ValheimCharacterEditor
 
         private void _Populate()
         {
-            // Get characters
-            try
-            {
-                Customization.GetCharacters();
-            }
-            catch
-            {
-                MessageBox.Show("There was an error while scanning for characters.", "ERROR", MessageBoxButtons.OK);
-            }
-
-            // Populate forms with data        
+            // Show selected character in form
             label_Character.Text = Customization.SelectedCharacter.Data.Name;
 
-
-            //add controls for editable skills 
+            // Add controls for editable skills 
             int SkillStartPositionV = 40;
             int SkillStartPositionH = 18;
             foreach (var skill in ValheimEngine.SkillsUI)
             {
-              
-               
                 Controls.Skill_control skillcontrol = new Controls.Skill_control();
                 skillcontrol.Location = new System.Drawing.Point(SkillStartPositionH, SkillStartPositionV);
                 skillcontrol.skill_name = skill.ToString();
@@ -48,7 +35,8 @@ namespace ValheimCharacterEditor
                 ValheimEngine.Character.SkillName SN = (ValheimEngine.Character.SkillName)Enum.Parse(typeof(ValheimEngine.Character.SkillName), skill.ToString());
                 Customization.SelectedCharacter.Data.Skills.Where(w => w.SkillName == SN).ToList().ForEach(s => skill_level  = (int)s.Level);
                               
-                if (skill_level != 101){
+                if (skill_level != 101)
+                {
                     skillcontrol.skill_level = skill_level;
                     Controls.Add(skillcontrol);
                 } else
@@ -59,8 +47,7 @@ namespace ValheimCharacterEditor
                     Customization.SelectedCharacter.Data.Skills.Add(add_skill);
                     skillcontrol.skill_level = 1;
                     Controls.Add(skillcontrol);
-                }    
-                
+                }                
 
                 SkillStartPositionV += 70;
                 if (SkillStartPositionV > 700)
@@ -68,18 +55,14 @@ namespace ValheimCharacterEditor
                     SkillStartPositionH += 500;
                     SkillStartPositionV = 40;
                 }
-                
             }
 
         }
-
-  
 
         private void button_apply_Click(object sender, EventArgs e)
         {
             try
             {
-                
                 // Make a backup of the selected character file
                 if (!Util.BackupFile(Customization.SelectedCharacter.File))
                 {
@@ -90,19 +73,20 @@ namespace ValheimCharacterEditor
                 // Write customization, if fail restore backup
                 if (Customization.WriteCustomization())
                 {
-                    MessageBox.Show("Customization applied.", "INFO", MessageBoxButtons.OK);
+                    MessageBox.Show("Skill customization applied.", "INFO", MessageBoxButtons.OK);
                     _Populate();
+                    Close();
                 }
                 else
                 {
-                    MessageBox.Show("There was an error while applying the new customization. Last backup will be restored.", "ERROR", MessageBoxButtons.OK);
+                    MessageBox.Show("There was an error while applying the new skill customization. Last backup will be restored.", "ERROR", MessageBoxButtons.OK);
                     Util.RestoreFile();
                     return;
                 }
             }
             catch
             {
-                MessageBox.Show("There was an error while applying the new customization. Last backup will be restored.", "FATAL ERROR", MessageBoxButtons.OK);
+                MessageBox.Show("There was an error while applying the new skill customization. Last backup will be restored.", "FATAL ERROR", MessageBoxButtons.OK);
                 Util.RestoreFile();
             }
         }
@@ -116,9 +100,6 @@ namespace ValheimCharacterEditor
 
                     Controls.Skill_control skillcontrol = (Controls.Skill_control)ctrl;
                     skillcontrol.skill_level = 1;
-
-
-
                 }
                 Console.WriteLine(ctrl.Name);
                 Console.WriteLine(ctrl.GetType().ToString());
@@ -134,9 +115,6 @@ namespace ValheimCharacterEditor
 
                     Controls.Skill_control skillcontrol = (Controls.Skill_control)ctrl;
                     skillcontrol.skill_level = 50;
-
-
-
                 }
                 Console.WriteLine(ctrl.Name);
                 Console.WriteLine(ctrl.GetType().ToString());
@@ -150,12 +128,8 @@ namespace ValheimCharacterEditor
             {
                 if (ctrl.GetType().ToString() == "ValheimCharacterEditor.Controls.Skill_control")
                 {
-
                     Controls.Skill_control skillcontrol = (Controls.Skill_control)ctrl;
                     skillcontrol.skill_level = 100;
-
-
-
                 }
                 Console.WriteLine(ctrl.Name);
                 Console.WriteLine(ctrl.GetType().ToString());
@@ -170,6 +144,13 @@ namespace ValheimCharacterEditor
         private void button_Minimize_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
+        }
+
+        private void FormSkills_Move(object sender, MouseEventArgs e)
+        {
+            Capture = false;
+            Message msg = Message.Create(Handle, 0xA1, (IntPtr)0x02, IntPtr.Zero);
+            base.WndProc(ref msg);
         }
     }
 }
