@@ -66,7 +66,7 @@ namespace ValheimCharacterEditor
 
         private void comboBox_Characters_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Customization.FirstRun || String.IsNullOrEmpty(comboBox_Characters.SelectedItem.ToString()))
+            if (Customization.FirstRun || comboBox_Characters.SelectedIndex == -1 || comboBox_Characters.SelectedItem.ToString() == null)
             {
                 return;
             }        
