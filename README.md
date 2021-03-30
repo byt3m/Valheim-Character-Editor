@@ -21,6 +21,3 @@ Related to the skin colors, please note that the default in-game skin tone is li
  
 # Known problems
   - Steam sync seems to be causing problems like character duplicates or restoring your character file. Disabling it is recommended.
-
-# Whats coming next
-  - Inventory editor.
