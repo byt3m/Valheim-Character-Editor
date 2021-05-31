@@ -12,7 +12,7 @@ namespace ValheimCharacterEditor
 {
     public partial class Form_Inventory : Form
     {
-        Controls.Item_control[,] _inventory = new Controls.Item_control[4,8];
+        Controls.Item_control[,] _inventory = new Controls.Item_control[4,8];//Non-Modded inventory size
         public Form_Inventory()
         {
             InitializeComponent();
@@ -23,15 +23,41 @@ namespace ValheimCharacterEditor
         }
         private void _Populate()
         {
-
+            if (Customization.SelectedCharacter.Data is null || Customization.SelectedCharacter.File is null)
+            {
+                MessageBox.Show("No Character Selected");
+                this.Close();
+                return;
+            }
             // Show selected character in form
             label_Character.Text = Customization.SelectedCharacter.Data.Name;
+            
+            //Compatibility with Inventory Mods
+            int maxY=0, maxX = 0;
+            foreach (ValheimEngine.Character.Item item in Customization.SelectedCharacter.Data.Inventory)
+            {
+                if (item.Pos.Item2 > maxY)
+                {
+                    maxY = item.Pos.Item2;
+                }
+                if(item.Pos.Item1 > maxX)
+                {
+                    maxX = item.Pos.Item1;
+                }
+            }
+            if(maxY+1 > _inventory.GetLength(0) || maxX+1 > _inventory.GetLength(1))
+            {
+                _inventory = new Controls.Item_control[maxY+1, maxX+1];
+                //Add the difference from the standard inventory onto the window size
+                this.Width += 70 * ((maxX + 1) - 8);
+                this.Height += 70 * ((maxY + 1) - 4);
+            }
 
             // Add controls for inventory
             int InventoryStartPositionV = 40;
             int InventoryStartPositionH = 18;
             int x=0,y=0;
-            for(int i=0; i<32;i++)
+            for(int i=0; i<_inventory.Length;i++)
             {
                 
                 Controls.Item_control itemcontrol = new Controls.Item_control();
@@ -42,7 +68,7 @@ namespace ValheimCharacterEditor
 
                 Controls.Add(itemcontrol);
                 
-                if (i > 0 && (i % 8 == 7))
+                if (i > 0 && (i % (maxX+1) == maxX))
                 {
                     InventoryStartPositionH = 18;
                     InventoryStartPositionV += 70;
@@ -55,6 +81,10 @@ namespace ValheimCharacterEditor
                     x++;
                 }
 
+            }
+            if (Customization.SelectedCharacter.Data.Inventory is null)
+            {
+                return;
             }
             foreach(ValheimEngine.Character.Item item in Customization.SelectedCharacter.Data.Inventory)
             {
