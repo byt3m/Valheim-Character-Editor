@@ -46,6 +46,7 @@ namespace ValheimCharacterEditor.Controls
             this.itemImage.Size = new System.Drawing.Size(78, 78);
             this.itemImage.TabIndex = 0;
             this.itemImage.TabStop = false;
+            this.itemImage.Click += new System.EventHandler(this.itemImage_Click);
             // 
             // Item_control
             // 

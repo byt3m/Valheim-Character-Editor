@@ -114,12 +114,23 @@
     <Compile Include="Form_Inventory.Designer.cs">
       <DependentUpon>Form_Inventory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form_Item.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Item.Designer.cs">
+      <DependentUpon>Form_Item.cs</DependentUpon>
+    </Compile>
     <Compile Include="Parser.cs" />
     <Compile Include="Form_Skills.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form_Skills.Designer.cs">
       <DependentUpon>Form_Skills.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Strings\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ValheimEngine.cs" />
     <Compile Include="Customization.cs" />
@@ -145,6 +156,9 @@
     <EmbeddedResource Include="Form_Inventory.resx">
       <DependentUpon>Form_Inventory.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Form_Item.resx">
+      <DependentUpon>Form_Item.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -156,6 +170,10 @@
     </Compile>
     <EmbeddedResource Include="Form_Skills.resx">
       <DependentUpon>Form_Skills.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Strings\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
