@@ -15,7 +15,7 @@ namespace ValheimCharacterEditor
         ValheimEngine.Character.Item _itemData;
         public event EventHandler<ValheimEngine.Character.Item> ApplyItemChange;
         bool firstLoad = true;
-        public Form_Item(ValheimEngine.Character.Item ItemData)
+        public Form_Item(ValheimEngine.Character.Item ItemData, int x, int y)
         {
             InitializeComponent();
 
@@ -30,15 +30,23 @@ namespace ValheimCharacterEditor
             comboBox_Item.DataSource = cmbItems;
             comboBox_Item.DisplayMember = "displayname";
             comboBox_Item.ValueMember = "value";
-            comboBox_Item.SelectedValue = _itemData.Name;
 
-            //Application.DoEvents();
-
-            tb_Quantity.Value = _itemData.Stack;
-            tb_Variant.Value = _itemData.Variant;
-            tb_Quality.Value = _itemData.Quality;
-            firstLoad = false;
-            
+            if (!(_itemData is null))
+            {
+                comboBox_Item.SelectedValue = _itemData.Name;
+                tb_Quantity.Value = _itemData.Stack;
+                tb_Variant.Value = _itemData.Variant;
+                tb_Quality.Value = _itemData.Quality;
+                firstLoad = false;
+            }
+            else
+            {
+                _itemData = new ValheimEngine.Character.Item();
+                _itemData.Pos = new Tuple<int, int>(x, y);
+                firstLoad = false;
+                comboBox_Item.SelectedValue = "Amber";
+                comboBox_Item_SelectedIndexChanged(null, null);
+            }           
         }
 
         private void button_Close_Click(object sender, EventArgs e)
@@ -48,6 +56,7 @@ namespace ValheimCharacterEditor
 
         private void comboBox_Item_SelectedIndexChanged(object sender, EventArgs e)
         {
+            
             UpdateImage();
             if (!(comboBox_Item.SelectedValue is null))
             {

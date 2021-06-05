@@ -107,7 +107,7 @@ namespace ValheimCharacterEditor
 
         private void ItemControlClicked(object sender, ItemControlClickEventArgs e)
         {          
-            Form_Item itemproperties = new Form_Item(_inventory[e.y, e.x].ItemData);
+            Form_Item itemproperties = new Form_Item(_inventory[e.y, e.x].ItemData, e.x, e.y);
             itemproperties.ApplyItemChange += ItemChangeApplied;
             var location = _inventory[e.y, e.x].PointToScreen(Point.Empty);
             itemproperties.StartPosition = FormStartPosition.Manual;
@@ -142,7 +142,10 @@ namespace ValheimCharacterEditor
                 {
                     if(!(_inventory[i,j] is null))
                     {
-                        Customization.SelectedCharacter.Data.Inventory.Add(_inventory[i, j].ItemData);
+                        if (!(_inventory[i, j].ItemData is null))
+                        {
+                            Customization.SelectedCharacter.Data.Inventory.Add(_inventory[i, j].ItemData);
+                        }
                     }
                 }
             }
