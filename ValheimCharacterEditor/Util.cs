@@ -95,5 +95,10 @@ namespace ValheimCharacterEditor
         {
             return System.Drawing.Color.FromArgb(255, (int)(color.X*255), (int)(color.Y * 255), (int)(color.Z * 255));
         }
+
+        static public float GetMaxDurability(string itemName, int quality)
+        {
+            return ValheimEngine.ItemProperties[itemName].MaxDurability + (float)Math.Max(0, quality - 1) * ValheimEngine.ItemProperties[itemName].DurabilityPerLevel;
+        }
     }
 }
