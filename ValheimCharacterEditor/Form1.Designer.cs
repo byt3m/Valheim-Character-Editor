@@ -57,6 +57,7 @@ namespace ValheimCharacterEditor
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.colorDialog_HairColor = new System.Windows.Forms.ColorDialog();
             this.button_Skills = new System.Windows.Forms.Button();
+            this.button_Inventory = new System.Windows.Forms.Button();
             this.groupBox_Customization.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -286,7 +287,7 @@ namespace ValheimCharacterEditor
             this.label_Version.Name = "label_Version";
             this.label_Version.Size = new System.Drawing.Size(156, 13);
             this.label_Version.TabIndex = 7;
-            this.label_Version.Text = "Valheim Character Editor v1.6";
+            this.label_Version.Text = "Valheim Character Editor v1.8";
             // 
             // button_Minimize
             // 
@@ -357,12 +358,28 @@ namespace ValheimCharacterEditor
             this.button_Skills.UseVisualStyleBackColor = false;
             this.button_Skills.Click += new System.EventHandler(this.button_Skills_Click);
             // 
+            // button_Inventory
+            // 
+            this.button_Inventory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.button_Inventory.Enabled = false;
+            this.button_Inventory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Inventory.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Inventory.ForeColor = System.Drawing.Color.White;
+            this.button_Inventory.Location = new System.Drawing.Point(98, 306);
+            this.button_Inventory.Name = "button_Inventory";
+            this.button_Inventory.Size = new System.Drawing.Size(80, 28);
+            this.button_Inventory.TabIndex = 12;
+            this.button_Inventory.Text = "Inventory";
+            this.button_Inventory.UseVisualStyleBackColor = false;
+            this.button_Inventory.Click += new System.EventHandler(this.button_Inventory_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(583, 346);
+            this.Controls.Add(this.button_Inventory);
             this.Controls.Add(this.button_Skills);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button_Minimize);
@@ -417,6 +434,7 @@ namespace ValheimCharacterEditor
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ColorDialog colorDialog_HairColor;
         private System.Windows.Forms.Button button_Skills;
+        private System.Windows.Forms.Button button_Inventory;
     }
 }
 
