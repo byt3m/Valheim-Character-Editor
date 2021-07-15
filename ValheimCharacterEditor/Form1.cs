@@ -95,6 +95,7 @@ namespace ValheimCharacterEditor
                 textBox_SkinTone.Enabled = true;
                 button_Apply.Enabled = true;
                 button_Skills.Enabled = true;
+                button_Inventory.Enabled = true;
             }
             catch
             {
@@ -230,6 +231,12 @@ namespace ValheimCharacterEditor
             skills_form.ShowDialog();
             
 
+        }
+
+        private void button_Inventory_Click(object sender, EventArgs e)
+        {
+            Form_Inventory inventory_form = new Form_Inventory();
+            inventory_form.ShowDialog();
         }
     }
 }
