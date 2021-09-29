@@ -159,8 +159,7 @@ namespace ValheimCharacterEditor
                 var food = new ValheimEngine.Character.Food
                 {
                     Name = byteAccess.ReadString(),
-                    HpLeft = byteAccess.ReadSingle(),
-                    StaminaLeft = byteAccess.ReadSingle()
+                    HpLeft = byteAccess.ReadSingle()
                 };
                 character.Foods.Add(food);
             }
@@ -289,7 +288,6 @@ namespace ValheimCharacterEditor
                 {
                     byteAccess2.Write(food.Name);
                     byteAccess2.Write(food.HpLeft);
-                    byteAccess2.Write(food.StaminaLeft);
                 }
 
                 byteAccess2.Write(character.SkillsVersion);
