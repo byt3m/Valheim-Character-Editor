@@ -1,8 +1,8 @@
 # Valheim Character Editor
 
-This repository is licensed under the GNU General Public License v3.0.
+**This project is discontinued, if you want to get it updated and working for the current Valheim version you are a free to make a fork and continue it. I am sorry for the inconveniences.**
 
-![alt text](https://raw.githubusercontent.com/byt3m/Valheim-Character-Editor/main/ValheimCharacterEditor16.PNG)
+This repository is licensed under the GNU General Public License v3.0.
 
 This program creates a backup of your character data with each application. If you happen to lose your character or anything related to it, you can go to "C:\Users\\[username]\AppData\LocalLow\IronGate\Valheim\characters" and recover it.
 
